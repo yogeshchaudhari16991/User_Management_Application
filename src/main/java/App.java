@@ -1,10 +1,28 @@
 /**
  * Created by yogesh on 7/7/2016.
  */
-import static spark.Spark.*;
+
+import com.mongodb.*;
+
+import controller.UserController;
+import model.UserEngine;
 
 public class App {
+    static MongoClient mongoClient;
     public static void main(String[] args) {
-        get("/hello", (req, res) -> "Hello World");
+            try {
+                new UserController(new UserEngine(mongo()));
+            }
+            catch (Exception e) {
+                System.out.println("Exception Occurred: "+ e);
+                mongoClient.close();
+            }
+        }
+
+        private static DBCollection mongo() throws Exception {
+            mongoClient = new MongoClient();
+            DB database = mongoClient.getDB("UserManagementSystem");
+            DBCollection collection = database.getCollection("Users");
+            return collection;
     }
 }
