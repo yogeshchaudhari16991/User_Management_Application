@@ -10,10 +10,11 @@ public class Company{
 
     // constructors
     public Company() {
+        super();
     }
 
     public Company(String name, String website) {
-        super();
+        this();
         this.name = name;
         this.website = website;
     }
@@ -33,5 +34,18 @@ public class Company{
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    @Override
+    public String toString() {
+        return ("{" +
+                "\n\t Name: " + name +
+                "\n\t Website: " + website +
+                "\n}");
+    }
+
+    public void generateCompany(String name, String website) {
+        this.setName(name);
+        this.setWebsite(website);
     }
 }

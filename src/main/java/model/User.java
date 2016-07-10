@@ -44,31 +44,22 @@ public class User {
 
     // constructor
     public User() {
-
+        super();
+        this.address = new Address();
+        this.company = new Company();
     }
 
     public User(String id, String firstName, String lastName, String email, String dateCreated, String street, String city, String zip,
-                String state, String country, String profilePic, String companyName, String website) {
-        super();
+                String state, String country, String profilePic, String name, String website) {
+        this();
         this.id = id;
         this.lastName = lastName;
         this.email = email;
         this.firstName = firstName;
         this.dateCreated = dateCreated;
-        this.address = generateAddress(street, city, zip, state, country);
+        this.address.generateAddress(street, city, zip, state, country);
         this.profilePic = profilePic;
-        this.company = generateCompany(companyName, website);
-    }
-
-    // generator methods for nested class objects
-    private Company generateCompany(String companyName, String website) {
-        Company company = new Company(companyName, website);
-        return company;
-    }
-
-    private Address generateAddress(String street, String city, String zip, String state, String country) {
-        Address address = new Address(street, city, zip, state, country);
-        return address;
+        this.company.generateCompany(name, website);
     }
 
     // getters and setters
@@ -136,4 +127,17 @@ public class User {
         this.company = comapny;
     }
 
+    @Override
+    public String toString(){
+        return ("User: " +
+                "\n ID: " + this.getId() + "" +
+                "\n First Name: " + this.getFirstName() +
+                "\n Last Name:" + this.getLastname() +
+                "\n Email: " + this.getEmail() +
+                "\n Address: " + this.getAddress() +
+                "\n Date Created: " + this.getDateCreated() +
+                "\n Company: " + this.getCompany() +
+                "\n Profile Pic: " + this.getProfilePic()
+                );
+    }
 }

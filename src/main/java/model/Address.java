@@ -11,12 +11,25 @@ public class Address{
     private String state;
     private String country;
 
+    @Override
+    public String toString() {
+        return ("{" +
+                "\n\t Street: " + street +
+                "\n\t City: " + city +
+                "\n\t Zip: " + zip +
+                "\n\t State: " + state +
+                "\n\t Country: " + country +
+                "\n}");
+    }
+
+
     // Constructors
     public Address() {
+        super();
     }
 
     public Address(String street, String city, String zip, String state, String country) {
-        super();
+        this();
         this.street = street;
         this.city = city;
         this.zip = zip;
@@ -63,5 +76,13 @@ public class Address{
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public void generateAddress(String street, String city, String zip, String state, String country) {
+        this.setStreet(street);
+        this.setCity(city);
+        this.setZip(zip);
+        this.setState(state);
+        this.setCountry(country);
     }
 }

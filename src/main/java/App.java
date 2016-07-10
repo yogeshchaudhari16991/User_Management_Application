@@ -14,7 +14,8 @@ public class App {
                 new UserController(new UserEngine(mongo()));
             }
             catch (Exception e) {
-                System.out.println("Exception Occurred: "+ e);
+                //System.out.println("In App - Exception Occurred: "+ e.printStackTrace(););
+                e.printStackTrace();
                 mongoClient.close();
             }
         }
@@ -23,6 +24,7 @@ public class App {
             mongoClient = new MongoClient();
             DB database = mongoClient.getDB("UserManagementSystem");
             DBCollection collection = database.getCollection("Users");
+            //collection.drop();
             return collection;
     }
 }
