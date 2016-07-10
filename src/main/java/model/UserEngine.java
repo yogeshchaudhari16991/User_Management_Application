@@ -38,11 +38,13 @@ public class UserEngine {
     public List<User> getAllUsers(){
 
         DBCursor cursor = this.mongo.find();
-        System.out.println("UserEngine - Cursor Size:" + cursor.size());
+//        System.out.println("UserEngine - Cursor Size:" + cursor.size());
         users.clear();
         for(DBObject dbObj : cursor){
+//            System.out.println(dbObj);
             users.add(toUserObject(dbObj));
         }
+//        System.out.println("User Engine Finished");
         return users;
     }
 

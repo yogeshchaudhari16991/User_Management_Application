@@ -29,8 +29,9 @@ public class UserController {
     private void setupRequestPoints() {
         get("/users", (req, res) -> {
             StringBuilder usersInJSON = new StringBuilder("");
-            System.out.println("In UserController - Size of User List: " + this.userEngine.getAllUsers().size());
+//            System.out.println("In UserController - Size of User List: " + this.userEngine.getAllUsers().size());
             for (User user : this.userEngine.getAllUsers()) {
+                //System.out.println(user);
                 usersInJSON.append(toJson(user));
             }
             //System.out.println("In UserController - JSON for Users: " + usersInJSON);

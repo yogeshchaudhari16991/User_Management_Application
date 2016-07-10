@@ -4,6 +4,9 @@
 
 package model;
 
+import static util.UserEngineExtensions.addressValid;
+import static util.UserEngineExtensions.companyValid;
+
 public class User {
 
     /* User Structure:
@@ -45,8 +48,8 @@ public class User {
     // constructor
     public User() {
         super();
-        this.address = new Address();
-        this.company = new Company();
+//        this.address = new Address();
+//        this.company = new Company();
     }
 
     public User(String id, String firstName, String lastName, String email, String dateCreated, String street, String city, String zip,
@@ -57,9 +60,17 @@ public class User {
         this.email = email;
         this.firstName = firstName;
         this.dateCreated = dateCreated;
-        this.address.generateAddress(street, city, zip, state, country);
+        System.out.println(street+city+zip+state+country);
+        System.out.println(addressValid(street, city, zip, state, country));
+        if(addressValid(street, city, zip, state, country)) {
+            this.address = new Address(street, city, zip, state, country);
+        }
         this.profilePic = profilePic;
-        this.company.generateCompany(name, website);
+        System.out.println(name+website);
+        System.out.println(companyValid(name, website));
+        if(companyValid(name, website)) {
+            this.company = new Company(name, website);
+        }
     }
 
     // getters and setters

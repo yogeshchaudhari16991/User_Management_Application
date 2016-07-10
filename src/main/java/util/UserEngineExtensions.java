@@ -63,25 +63,70 @@ public class UserEngineExtensions {
         return obj;
     }
 
-    private static boolean companyValid(Company company) {
-        return (company.getName()!= null || company.getWebsite() != null) && (!company.getName().isEmpty() || !company.getWebsite().isEmpty());
+    public static boolean companyValid(Company company) {
+        return companyValid(company.getName(), company.getWebsite());
     }
 
-    private static boolean addressValid(Address address) {
-        return (address.getStreet() != null || address.getCity() != null || address.getZip() != null || address.getState() != null
-        || address.getCountry() != null) && (!address.getStreet().isEmpty() || !address.getCity().isEmpty() || !address.getZip().isEmpty()
-        || !address.getState().isEmpty() || !address.getCountry().isEmpty());
+    public static boolean companyValid(String name, String website) {
+        return (name != null || website != null) && (!name.isEmpty() || !website.isEmpty());
     }
+
+    public static boolean addressValid(Address address) {
+        return addressValid(address.getStreet(), address.getCity(), address.getZip(), address.getState(), address.getCountry());
+    }
+
+    public static boolean addressValid(String street, String city, String zip, String state, String country) {
+        return (street != null || city != null || zip != null || state != null || country != null) &&
+                (!street.isEmpty() || !city.isEmpty() || !zip.isEmpty() || !state.isEmpty() || !country.isEmpty());
+    }
+
 
     public static final User toUserObject(DBObject dbObj) {
         if(dbObj != null) {
-            return new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
-                    (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), (String) dbObj.get("address.street"),
-                    (String) dbObj.get("address.city"), (String) dbObj.get("address.zip"), (String) dbObj.get("address.state"),
-                    (String) dbObj.get("address.country"), (String) dbObj.get("profilePic"), (String) dbObj.get("company.name"),
-                    (String) dbObj.get("company.website"));
-
+            User user;
+            System.out.println("{" + dbObj.containsField("address") + ", " + dbObj.containsField("company") + "}");
+            BasicDBObject addObj = null;
+            if(dbObj.containsField("address")){
+               addObj = (BasicDBObject) dbObj.get("address");
+            }
+            BasicDBObject comObj = null;
+            if(dbObj.containsField("company")) {
+                comObj = (BasicDBObject) dbObj.get("company");
+            }
+//            System.out.println(addObj.toString());
+//            System.out.println(comObj.toString());
+            if(addObj != null && comObj != null) {
+                System.out.println("in 1st");
+                 user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
+                        (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), (String) addObj.get("street"),
+                        (String) addObj.get("city"), (String) addObj.get("address.zip"), (String) addObj.get("address.state"),
+                        (String) addObj.get("country"), (String) dbObj.get("profilePic"), (String) comObj.get("name"),
+                        (String) comObj.get("website"));
+            } else {
+                if (addObj != null) {
+                    System.out.println("in 2nd");
+                    user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
+                            (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), (String) addObj.get("street"),
+                            (String) addObj.get("city"), (String) addObj.get("zip"), (String) addObj.get("state"),
+                            (String) addObj.get("country"), (String) dbObj.get("profilePic"), null, null);
+                } else {
+                    if (comObj != null) {
+                        System.out.println("in 3rd");
+                        user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
+                                (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), null, null, null, null, null,
+                                (String) dbObj.get("profilePic"), (String) comObj.get("name"), (String) comObj.get("website"));
+                    } else {
+                        System.out.println("in 4th");
+                        user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
+                                (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), null, null, null, null, null,
+                                (String) dbObj.get("profilePic"), null, null);
+                    }
+                }
+            }
+            System.out.println(user);
+            return user;
         }
+        System.out.println("in else");
         return null;
     }
 
