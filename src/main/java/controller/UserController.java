@@ -4,16 +4,11 @@
 
 package controller;
 
-import static spark.Spark.get;
-import static spark.Spark.post;
-import static spark.Spark.put;
-
-import com.google.gson.Gson;
-import com.sun.javafx.collections.MappingChange;
+//imports
 import model.*;
 import util.ErrorClass;
-
-import static util.JsonUtil.json;
+//static imports
+import static spark.Spark.*;
 import static util.JsonUtil.toJson;
 
 public class UserController {
@@ -29,19 +24,16 @@ public class UserController {
     private void setupRequestPoints() {
         get("/users", (req, res) -> {
             StringBuilder usersInJSON = new StringBuilder("");
-//            System.out.println("In UserController - Size of User List: " + this.userEngine.getAllUsers().size());
             for (User user : this.userEngine.getAllUsers()) {
-                //System.out.println(user);
                 usersInJSON.append(toJson(user));
             }
-            //System.out.println("In UserController - JSON for Users: " + usersInJSON);
             if (usersInJSON.length() > 0) {
                 res.type("application/json");
                 res.status(302);
                 return usersInJSON;
             } else {
                 res.status(404);
-                return toJson(new ErrorClass("There are no user entries in database"));
+                return (new ErrorClass("There are no user entries in database")).getMessage();
             }
         });
 
@@ -54,30 +46,21 @@ public class UserController {
                 return "";
             } else {
                 res.status(409);  // HTTP code for Conflict response
-                return toJson(new ErrorClass("Conflict Occurred: User with id already present in database"));
+                return (new ErrorClass("Conflict Occurred: User with id already present in database")).getMessage();
             }
         });
 
         get("/user/:id", (req, res) -> {
             String id = req.params(":id");
-            try {
-                User user = userEngine.getUser(id);
-                if(user != null) {
-                    res.type("application/json");
-                    res.status(302);
-                    return toJson(user);
-                }
-                res.status(404);
-                return toJson(new ErrorClass("User with id " + id + " not found"));
+
+            User user = userEngine.getUser(id);
+            if (user != null) {
+                res.type("application/json");
+                res.status(302);  // HTTP code for Found
+                return toJson(user);
             }
-            catch(Exception e) {
-                res.status(500);
-                return toJson(new ErrorClass(e));
-            }
-            catch(Error e) {
-                res.status(500);
-                return toJson(new ErrorClass(e));
-            }
+            res.status(404);  // HTTP code for Not Found
+            return (new ErrorClass("User with id " + id + " not found")).getMessage();
         });
 
         put("/user/:id", (req, res) -> {
@@ -85,14 +68,41 @@ public class UserController {
             String id = req.params(":id");
             String body = req.body();
             if (this.userEngine.updateUser(id, body)) {
-                //res.redirect("/users");
                 res.status(302);
-                return res;
+                res.redirect("/users");
+                return "";
             }
             res.status(404);
-            return toJson(new ErrorClass("User with id " + id + " not found"));
+            return (new ErrorClass("User with id " + id + " not found")).getMessage();
         });
 
+        get("/:anything", (req, res) -> {
+            res.status(501);
+           return (new ErrorClass(" Request not implemented... Stay tuned!!")).getMessage();
+        });
 
+        post("/:anything", (req, res) -> {
+            String any = req.params(":anything");
+            res.redirect("/"+any);
+            return "";
+        });
+
+        put("/:anything", (req, res) -> {
+            String any = req.params(":anything");
+            res.redirect("/"+any);
+            return "";
+        });
+
+        delete("/:anything", (req, res) -> {
+            String any = req.params(":anything");
+            res.redirect("/"+any);
+            return "";
+        });
+
+        options("/:anything", (req, res) -> {
+            String any = req.params(":anything");
+            res.redirect("/"+any);
+            return "";
+        });
     }
 }

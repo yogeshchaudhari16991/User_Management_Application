@@ -5,27 +5,23 @@ package util;
  */
 public class ErrorClass {
 
-        private String message;
+    // encpsulated fields
+    private String message;
 
-        public ErrorClass(String message) {
+    // Public Constructors
+    public ErrorClass(String message) {
+        this.message = message;
+    }
 
-            this.message = message;
+    public ErrorClass(Exception e) {
+        this.message = e.getMessage();
+    }
 
-        }
+    public ErrorClass(Error e) {
+        this.message = e.getMessage();
+    }
 
-        public ErrorClass(Exception e) {
-
-            this.message = e.getMessage();
-
-        }
-
-        public ErrorClass(Error e) {
-            this.message = e.getMessage();
-        }
-
-        public String getMessage() {
-
-            return this.message;
-
-        }
+    public String getMessage() {
+        return this.message;
+    }
 }

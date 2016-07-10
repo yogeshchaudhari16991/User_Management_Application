@@ -5,10 +5,17 @@ package model;
  */
 // Company Object Type
 public class Company{
+
+    /* Company Structure
+        "name":"Denesik Group",
+        "website":"http://jodie.org"
+     */
+
+    //encapsulated fields
     private String name;
     private String website;
 
-    // constructors
+    // Public Constructors
     public Company() {
         super();
     }
@@ -36,16 +43,12 @@ public class Company{
         this.website = website;
     }
 
+    // Override toString method
     @Override
     public String toString() {
         return ("{" +
                 "\n\t Name: " + name +
                 "\n\t Website: " + website +
                 "\n}");
-    }
-
-    public void generateCompany(String name, String website) {
-        this.setName(name);
-        this.setWebsite(website);
     }
 }

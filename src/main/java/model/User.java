@@ -4,6 +4,7 @@
 
 package model;
 
+// static imports
 import static util.UserEngineExtensions.addressValid;
 import static util.UserEngineExtensions.companyValid;
 
@@ -29,27 +30,24 @@ public class User {
            },
            "profilePic":"http://lorempixel.com/640/480/people"
         }
-
      */
 
-    // User fields
+    // encapsulated fields
     // Later try to use private static final long serialVersionUID = 42L;
+    // try to use Date instead of String
     private String id;
     private String firstName;
     private String lastName;
     private String email;
     private Address address;
     private String dateCreated;
-    //private Date dateCreated = new Date(); /* Later Convert to Date type if possible */
     private Company company;
     private String profilePic;
 
 
-    // constructor
+    // Public Constructor
     public User() {
         super();
-//        this.address = new Address();
-//        this.company = new Company();
     }
 
     public User(String id, String firstName, String lastName, String email, String dateCreated, String street, String city, String zip,
@@ -60,14 +58,10 @@ public class User {
         this.email = email;
         this.firstName = firstName;
         this.dateCreated = dateCreated;
-        System.out.println(street+city+zip+state+country);
-        System.out.println(addressValid(street, city, zip, state, country));
         if(addressValid(street, city, zip, state, country)) {
             this.address = new Address(street, city, zip, state, country);
         }
         this.profilePic = profilePic;
-        System.out.println(name+website);
-        System.out.println(companyValid(name, website));
         if(companyValid(name, website)) {
             this.company = new Company(name, website);
         }
@@ -138,8 +132,9 @@ public class User {
         this.company = comapny;
     }
 
+    // Override toString method
     @Override
-    public String toString(){
+    public String toString() {
         return ("User: " +
                 "\n ID: " + this.getId() + "" +
                 "\n First Name: " + this.getFirstName() +
@@ -149,6 +144,6 @@ public class User {
                 "\n Date Created: " + this.getDateCreated() +
                 "\n Company: " + this.getCompany() +
                 "\n Profile Pic: " + this.getProfilePic()
-                );
+        );
     }
 }

@@ -1,9 +1,7 @@
 package util;
 
+// imports
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import model.Address;
-import model.Company;
 import model.User;
 import spark.ResponseTransformer;
 
@@ -13,6 +11,7 @@ import spark.ResponseTransformer;
 
 public class JsonUtil {
 
+    // Static Utility methods
     public static String toJson(Object object) {
         return new Gson().toJson(object);
     }
@@ -22,9 +21,7 @@ public class JsonUtil {
     }
 
     public static ResponseTransformer json() {
-
         return JsonUtil::toJson;
-
     }
 
 }

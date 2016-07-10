@@ -1,5 +1,6 @@
 package util;
 
+// imports
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import model.Address;
@@ -10,7 +11,9 @@ import model.User;
  * Created by yoges on 7/8/2016.
  */
 public class UserEngineExtensions {
-    public static final DBObject toDBObject(User user) {
+
+    // Static Utility methods
+    public static DBObject toDBObject(User user) {
         BasicDBObject obj = new BasicDBObject("_id", user.getId());
         if(user.getFirstName() != null && (!user.getFirstName().isEmpty())){
             obj.append("firstName", user.getFirstName());
@@ -81,10 +84,9 @@ public class UserEngineExtensions {
     }
 
 
-    public static final User toUserObject(DBObject dbObj) {
+    public static User toUserObject(DBObject dbObj) {
         if(dbObj != null) {
             User user;
-            System.out.println("{" + dbObj.containsField("address") + ", " + dbObj.containsField("company") + "}");
             BasicDBObject addObj = null;
             if(dbObj.containsField("address")){
                addObj = (BasicDBObject) dbObj.get("address");
@@ -93,10 +95,7 @@ public class UserEngineExtensions {
             if(dbObj.containsField("company")) {
                 comObj = (BasicDBObject) dbObj.get("company");
             }
-//            System.out.println(addObj.toString());
-//            System.out.println(comObj.toString());
             if(addObj != null && comObj != null) {
-                System.out.println("in 1st");
                  user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
                         (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), (String) addObj.get("street"),
                         (String) addObj.get("city"), (String) addObj.get("address.zip"), (String) addObj.get("address.state"),
@@ -104,37 +103,28 @@ public class UserEngineExtensions {
                         (String) comObj.get("website"));
             } else {
                 if (addObj != null) {
-                    System.out.println("in 2nd");
                     user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
                             (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), (String) addObj.get("street"),
                             (String) addObj.get("city"), (String) addObj.get("zip"), (String) addObj.get("state"),
                             (String) addObj.get("country"), (String) dbObj.get("profilePic"), null, null);
                 } else {
                     if (comObj != null) {
-                        System.out.println("in 3rd");
                         user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
                                 (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), null, null, null, null, null,
                                 (String) dbObj.get("profilePic"), (String) comObj.get("name"), (String) comObj.get("website"));
                     } else {
-                        System.out.println("in 4th");
                         user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
                                 (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), null, null, null, null, null,
                                 (String) dbObj.get("profilePic"), null, null);
                     }
                 }
             }
-            System.out.println(user);
             return user;
         }
-        System.out.println("in else");
         return null;
     }
 
-    public static final User createNewUser(String id, String firstName, String lastName, String email, String dateCreated, String street, String city, String zip, String state, String country, String profilePic, String companyName, String website) {
-        return new User(id, firstName, lastName, email, dateCreated, street, city, zip, state, country, profilePic, companyName, website);
-    }
-
-    public static final DBObject updateFileds(User user, DBObject obj) {
+    public static DBObject updateFileds(User user, DBObject obj) {
         if(user.getFirstName() != null && (!user.getFirstName().isEmpty())){
             obj.put("firstName", user.getFirstName());
         }

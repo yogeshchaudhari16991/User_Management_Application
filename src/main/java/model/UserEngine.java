@@ -1,10 +1,10 @@
 package model;
 
+// imports
 import java.util.ArrayList;
 import java.util.List;
-
 import com.mongodb.*;
-
+// static imports
 import static util.JsonUtil.fromJson;
 import static util.UserEngineExtensions.*;
 
@@ -13,38 +13,37 @@ import static util.UserEngineExtensions.*;
  */
 public class UserEngine {
 
+    // encapsulated fields
     private List<User> users = new ArrayList<User>();
     private DBCollection mongo;
 
+    // Public Constructor
     public UserEngine(DBCollection mongo) {
         this.mongo = mongo;
     }
 
+    // CRUD methods for User
     public boolean insertUser(String json){
         User user = (User) fromJson(json);
         if(user.getId() == null || user.getId().isEmpty()){
             return false;
         }
-        System.out.println(user);
         try {
             this.mongo.insert(toDBObject(user), WriteConcern.SAFE);
             return true;
         } catch (Exception e) {
-            System.out.println("Exception occurred: " + e );
+            System.out.println("Exception occurred while inserting Object: " + e );
             return false;
         }
     }
 
     public List<User> getAllUsers(){
-
         DBCursor cursor = this.mongo.find();
-//        System.out.println("UserEngine - Cursor Size:" + cursor.size());
+        // clear previous data
         users.clear();
         for(DBObject dbObj : cursor){
-//            System.out.println(dbObj);
             users.add(toUserObject(dbObj));
         }
-//        System.out.println("User Engine Finished");
         return users;
     }
 
@@ -54,13 +53,13 @@ public class UserEngine {
             return null;
         }
         User user = toUserObject(cursor.next());
-        if(user != null)
+        if(user != null) {
             return user;
+        }
         return null;
     }
 
     public boolean updateUser(String id, String jsonBody){
-        // Add code to update User
         DBCursor cursor = this.mongo.find(new BasicDBObject("_id", id));
         if(cursor.size() == 0){
             return false;
@@ -68,9 +67,8 @@ public class UserEngine {
         try {
             DBObject curr = cursor.next();
             User user = (User)fromJson(jsonBody);
-            System.out.println("In UserEngine - " + user);
             BasicDBObject newObj = (BasicDBObject) updateFileds(user, curr);
-            // upsert=false, multi=false
+            // flags for upsert=false, multi=false
             this.mongo.update(new BasicDBObject("_id", id), newObj, false, false);
             return true;
         } catch (Exception e) {
@@ -78,9 +76,11 @@ public class UserEngine {
         }
     }
 
+
+    // Delete after Development phase
     public boolean demoData(){
         for(int i=0; i<5; i++){
-            User user = createNewUser("100"+i, "firstName", "lastName", "email", "dateCreated", "street", "city", "zip", "state", "country", "profilePic", "companyName", "website");
+            User user = new User("100"+i, "firstName", "lastName", "email", "dateCreated", "street", "city", "zip", "state", "country", "profilePic", "companyName", "website");
                 try {
                     this.mongo.update(new BasicDBObject("_id", user.getId()),toDBObject(user), true, false);
                 } catch (Exception e) {
@@ -91,5 +91,4 @@ public class UserEngine {
         }
         return true;
     }
-
 }
