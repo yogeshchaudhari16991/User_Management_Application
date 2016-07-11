@@ -90,7 +90,7 @@ public class UserEngine {
     //retrieve all users from DB
     public List<User> getAllUsers(){
         DBCursor cursor = this.mongo.find();
-        // clear previous data
+        // create new List of Users
         List<User> users = new ArrayList<User>();
         for(DBObject dbObj : cursor){
             users.add(toUserObject(dbObj));
@@ -130,7 +130,7 @@ public class UserEngine {
     }
 
 
-    // Delete after Development phase
+    // Only for Testing phase
     // generate pre-processing data
     public boolean demoData(){
         for(int i=0; i<5; i++){

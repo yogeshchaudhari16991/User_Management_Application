@@ -127,7 +127,7 @@ public class UserEngineExtensions {
             if(addObj != null && comObj != null) {
                  user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
                         (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), (String) addObj.get("street"),
-                        (String) addObj.get("city"), (String) addObj.get("address.zip"), (String) addObj.get("address.state"),
+                        (String) addObj.get("city"), (String) addObj.get("zip"), (String) addObj.get("state"),
                         (String) addObj.get("country"), (String) dbObj.get("profilePic"), (String) comObj.get("name"),
                         (String) comObj.get("website"));
             } else {
@@ -222,6 +222,9 @@ public class UserEngineExtensions {
 
     //method to validate Company object
     public static boolean companyValid(Company company) {
+        if(company == null){
+            return false;
+        }
         return companyValid(company.getName(), company.getWebsite());
     }
 
@@ -232,6 +235,9 @@ public class UserEngineExtensions {
 
     //method to validate Address object
     public static boolean addressValid(Address address) {
+        if(address == null){
+            return false;
+        }
         return addressValid(address.getStreet(), address.getCity(), address.getZip(), address.getState(), address.getCountry());
     }
 
