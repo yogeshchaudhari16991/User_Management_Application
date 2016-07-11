@@ -42,6 +42,8 @@ package model;
  */
 
 // static imports
+import util.EmailValidator;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -101,7 +103,12 @@ public class User {
         this();
         this.id = id;
         this.lastName = lastName;
-        this.email = email;
+        if(email != null){
+            EmailValidator validator = new EmailValidator();
+            if(validator.validate(email)){
+                this.email = email;
+            }
+        }
         this.firstName = firstName;
         if(dateCreated != null) {
             try {
@@ -153,7 +160,12 @@ public class User {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        if(email != null){
+            EmailValidator validator = new EmailValidator();
+            if(validator.validate(email)){
+                this.email = email;
+            }
+        }
     }
 
     public Address getAddress() {
