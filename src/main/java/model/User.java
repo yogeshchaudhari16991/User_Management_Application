@@ -26,6 +26,7 @@ package model;
  *      Util.UserEngineExtensions.java
  *      model.Address.java
  *      model.Company.java
+ *      Util.EmailValidator.java
  *
  * Build Process:
  *      DevEnv : mvn install
