@@ -80,7 +80,8 @@ public class UserEngine {
     // Delete after Development phase
     public boolean demoData(){
         for(int i=0; i<5; i++){
-            User user = new User("100"+i, "firstName", "lastName", "email", "dateCreated", "street", "city", "zip", "state", "country", "profilePic", "companyName", "website");
+            User user = createNewUser("100"+i, "firstName", "lastName", "email", "dateCreated", "street", "city", "zip", "state",
+                    "country", "profilePic", "companyName", "website");
                 try {
                     this.mongo.update(new BasicDBObject("_id", user.getId()),toDBObject(user), true, false);
                 } catch (Exception e) {

@@ -181,4 +181,11 @@ public class UserEngineExtensions {
         }
         return obj;
     }
+
+    public static User createNewUser(String id, String firstName, String lastName, String email, String dateCreated, String street,
+                                     String city, String zip, String state, String country, String profilePic, String name,
+                                     String website){
+        return new User(id, firstName, lastName, email, dateCreated, street, city, zip, state, country,
+                profilePic, name, website);
+    }
 }
