@@ -13,16 +13,16 @@
  * This file acts as Read Me file for User Management Application
  *
  * This file gives information about following :
- * Author of application
- * File operations
- * Build process for application
- * All reference used for development
- * Maintenance history
- * Problem statement
- * Assumptions
- * Language, Libraries and Frameworks Used
- * Instructions to Run Tests - UserEngineTest.java
- * Instructions to Run Application - App.java
+ * 1.  Author of application
+ * 2.  File operations
+ * 3.  Build process for application
+ * 4.  All reference used for development
+ * 5.  Maintenance history
+ * 6.  Problem statement
+ * 7.  Assumptions
+ * 8.  Language, Libraries and Frameworks Used
+ * 9.  Instructions to Run Tests - UserEngineTest.java
+ * 10. Instructions to Run Application - App.java
  *
  */
 /*
