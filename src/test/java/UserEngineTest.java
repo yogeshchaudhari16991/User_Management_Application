@@ -14,7 +14,11 @@
  * -------------------
  *
  * Defines Test cases for User Management Application
+ * Defines TestResponse class for converting user-data received from Response to required User object type
  *
+ * Important Note:  Before running UserEngineTest.java uncomment folowing lines:
+ * ---------------  collection.remove() line in App.java - mongo() method
+ *                  userEngine.demoData() line in UserController.java - constructor method
  *
  */
 /*
@@ -73,12 +77,22 @@ public class UserEngineTest {
 
     @Before
     public void before(){
-        // if database already contains some demo data uncomment these
-        TestResponse res = request("GET", "/users", null);
-        users = res.jsonArr();
+        // Before running UserEngineTest.java uncomment
+        // collection.remove() line in App.java - mongo() method
+        // userEngine.demoData() line in UserController.java - constructor method
+        //
+        // due to DemoData() method in UserEngine.java there will be 5 users with id ranging from 1000 to 1004
+        // already in mongoDB collection
+        //
+        // if database already contains some demo data uncomment these lines
+        //TestResponse res = request("GET", "/users", null);
+        //users = res.jsonArr();
     }
 
     @Test
+    // Testing method for creation of new user
+    // case 1: User does not already exist in Collection
+    // case 2: User already exists in Collection
     public void createNewUser() {
         int initialSize = users.size();
         String jsonReq = "{\"id\":\"1010\",\"firstName\":\"firstName\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"dateCreated\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
@@ -104,6 +118,9 @@ public class UserEngineTest {
     }
 
     @Test
+    // Testing method for getting all users from Collection
+    // Case 1: There are Users documents in Collection
+    // Case 2: There are no Users documents in Collection
     public void getAllUsers() {
         int initialSize = users.size();
         TestResponse res = request("GET", "/users", null);
@@ -118,24 +135,28 @@ public class UserEngineTest {
     }
 
     @Test
+    // Testing method to get User specified by user ID
+    // Case 1: User exists in collection
+    // Case 2: User does not exist in collection
     public void getUser() {
         String id = "1000";
-        TestResponse res = request("GET", "/user/1000", null);
+        TestResponse res = request("GET", "/user/"+id, null);
         if (res != null) {
             if(res.status == 302) {
                 user = res.json();
-                assertEquals("1000", user.getId());
+                assertEquals(id, user.getId());
             } else if (res.status == 200){
                 assertEquals("User with id 1000 not found", res.body);
             } else {
                 fail("getUsers Test Failed");
             }
         }
-        res = request("GET", "/user/1006", null);
+        id = "1006";
+        res = request("GET", "/user/"+id, null);
         if (res != null) {
             if(res.status == 302) {
                 user = res.json();
-                assertEquals("1006", user.getId());
+                assertEquals(id, user.getId());
             } else if (res.status == 200){
                 assertEquals("User with id 1006 not found", res.body);
             } else {
@@ -145,6 +166,9 @@ public class UserEngineTest {
     }
 
     @Test
+    // Testing method to update User specified by user ID
+    // Case 1: User exists in collection
+    // Case 2: User does not exist in collection
     public void updateUser() {
         String jsonReq = "{\"id\":\"1000\",\"firstName\":\"firstName-Edited\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"dateCreated\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
         TestResponse res = request("PUT", "/user/1000", jsonReq);
@@ -179,6 +203,9 @@ public class UserEngineTest {
         Spark.stop();
     }
 
+    // method to generate HTTPURLConnection
+    // and send request user-data in body if required
+    // receive response user-data back
     private TestResponse request(String method, String path, String jsonReq) {
         URL url;
         HttpURLConnection connection;
@@ -241,6 +268,8 @@ public class UserEngineTest {
         }
     }
 
+    // TestResponse class - Defined to easily convert received Response user-data
+    // from JSON to User object type
     private static class TestResponse {
 
         public final String body;

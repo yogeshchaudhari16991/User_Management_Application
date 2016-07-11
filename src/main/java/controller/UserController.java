@@ -75,7 +75,8 @@ public class UserController {
     public UserController(UserEngine userEngine) {
         this.userEngine = userEngine;
         // add some demo data
-        this.userEngine.demoData();
+        // uncomment when in Testing mode
+        // this.userEngine.demoData();
         // setup routing points
         setupRequestPoints();
     }

@@ -12,15 +12,16 @@
  * -------------------
  * This file acts as Read Me file for User Management Application
  *
- * defines Problem statement for Application
- * author of application
- * file operations
- * build process for application
- * all reference used for development
- * maintenance history
- * problem statement
- * assumptions
+ * This file gives information about following :
+ * Author of application
+ * File operations
+ * Build process for application
+ * All reference used for development
+ * Maintenance history
+ * Problem statement
+ * Assumptions
  * Language, Libraries and Frameworks Used
+ * Instructions to Run Tests - UserEngineTest.java
  *
  */
 /*
@@ -84,5 +85,9 @@
  *                                  3. Google Gson - ver 2.7
  *                                  4. JUnit - ver 4.12
  *
+ *
+ * Instructions to Run UserEngineTest.java: Before running UserEngineTest.java uncomment folowing lines:
+ * ---------------------------------------- 1. collection.remove() line in App.java - mongo() method
+ *                                          2. userEngine.demoData() line in UserController.java - constructor method
  *
  */

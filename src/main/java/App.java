@@ -67,7 +67,9 @@ public class App {
         mongoClient = new MongoClient();
         DB database = mongoClient.getDB("UserManagementSystem");
         DBCollection collection = database.getCollection("Users");
-        collection.remove(new BasicDBObject());
+        // delete previous data
+        // Uncomment when in Testing mode
+        //collection.remove(new BasicDBObject());
         return collection;
     }
 }
