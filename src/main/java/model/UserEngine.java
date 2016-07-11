@@ -52,6 +52,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 import com.mongodb.*;
+import util.EmailValidator;
 // static imports
 import static util.JsonUtil.fromJson;
 import static util.UserEngineExtensions.*;
@@ -80,8 +81,13 @@ public class UserEngine {
                 if (cursor.size() > 0) {
                     return false;
                 }
-                this.mongo.insert(toDBObject(user), WriteConcern.SAFE);
-                return true;
+                EmailValidator emailValidator = new EmailValidator();
+                if(emailValidator.validate(user.getEmail())) {
+                    this.mongo.insert(toDBObject(user), WriteConcern.SAFE);
+                    return true;
+                } else {
+                    return false;
+                }
             } catch (Exception e) {
                 System.out.println("Exception occurred while inserting Object: " + e);
                 return false;
@@ -123,10 +129,15 @@ public class UserEngine {
         try {
             DBObject curr = cursor.next();
             User user = (User)fromJson(jsonBody);
-            BasicDBObject newObj = (BasicDBObject) updateFileds(user, curr);
-            // flags for upsert=false, multi=false
-            this.mongo.update(new BasicDBObject("_id", id), newObj, false, false);
-            return true;
+            EmailValidator emailValidator = new EmailValidator();
+            if(emailValidator.validate(user.getEmail())) {
+                BasicDBObject newObj = (BasicDBObject) updateFileds(user, curr);
+                // flags for upsert=false, multi=false
+                this.mongo.update(new BasicDBObject("_id", id), newObj, false, false);
+                return true;
+            } else {
+                return false;
+            }
         } catch (Exception e) {
             return false;
         }
