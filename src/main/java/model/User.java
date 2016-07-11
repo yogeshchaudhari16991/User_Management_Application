@@ -78,8 +78,7 @@ public class User {
      */
 
     // encapsulated fields
-    // Later try to use private static final long serialVersionUID = 42L;
-    // try to use Date instead of String
+    private static final long serialVersionUID = 42L;
     private String id;
     private String firstName;
     private String lastName;
