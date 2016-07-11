@@ -85,8 +85,8 @@ public class UserEngineTest {
         // already in mongoDB collection
         //
         // if database already contains some demo data uncomment these lines
-        //TestResponse res = request("GET", "/users", null);
-        //users = res.jsonArr();
+        TestResponse res = request("GET", "/users", null);
+        users = res.jsonArr();
     }
 
     @Test
@@ -95,7 +95,7 @@ public class UserEngineTest {
     // case 2: User already exists in Collection
     public void createNewUser() {
         int initialSize = users.size();
-        String jsonReq = "{\"id\":\"1010\",\"firstName\":\"firstName\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"dateCreated\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
+        String jsonReq = "{\"id\":\"1010\",\"firstName\":\"firstName\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"2016-03-15T07:02:40.896Z\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
         TestResponse res = request("POST", "/users", jsonReq);
         if(res.status == 302) {
             users = res.jsonArr();
@@ -105,7 +105,7 @@ public class UserEngineTest {
         } else {
             fail("createNewUser Test Failed");
         }
-        jsonReq = "{\"id\":\"1010\",\"firstName\":\"firstName\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"dateCreated\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
+        jsonReq = "{\"id\":\"1010\",\"firstName\":\"firstName\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"2016-03-15T07:02:40.896Z\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
         res = request("POST", "/users", jsonReq);
         if(res.status == 302) {
             users = res.jsonArr();
@@ -170,7 +170,7 @@ public class UserEngineTest {
     // Case 1: User exists in collection
     // Case 2: User does not exist in collection
     public void updateUser() {
-        String jsonReq = "{\"id\":\"1000\",\"firstName\":\"firstName-Edited\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"dateCreated\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
+        String jsonReq = "{\"id\":\"1000\",\"firstName\":\"firstName-Edited\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"2016-03-15T07:02:40.896Z\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
         TestResponse res = request("PUT", "/user/1000", jsonReq);
         if (res != null) {
             if(res.status == 302) {
@@ -183,7 +183,7 @@ public class UserEngineTest {
                 fail("updateUser Test Failed");
             }
         }
-        jsonReq = "{\"id\":\"1006\",\"firstName\":\"firstName-Edited\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"dateCreated\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
+        jsonReq = "{\"id\":\"1006\",\"firstName\":\"firstName-Edited\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"2016-03-15T07:02:40.896Z\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
         res = request("PUT", "/user/1006", jsonReq);
         if (res != null) {
             if(res.status == 302) {

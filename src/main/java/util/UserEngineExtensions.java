@@ -91,7 +91,7 @@ public class UserEngineExtensions {
                 obj.append("address", addObj);
             }
         }
-        if(user.getDateCreated() != null && (!user.getDateCreated().isEmpty())){
+        if(user.getDateCreated() != null){
             obj.append("dateCreated", user.getDateCreated());
         }
         if(user.getCompany()!= null) {
@@ -126,24 +126,24 @@ public class UserEngineExtensions {
             }
             if(addObj != null && comObj != null) {
                  user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
-                        (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), (String) addObj.get("street"),
+                        (String) dbObj.get("email"), dbObj.get("dateCreated").toString(), (String) addObj.get("street"),
                         (String) addObj.get("city"), (String) addObj.get("zip"), (String) addObj.get("state"),
                         (String) addObj.get("country"), (String) dbObj.get("profilePic"), (String) comObj.get("name"),
                         (String) comObj.get("website"));
             } else {
                 if (addObj != null) {
                     user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
-                            (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), (String) addObj.get("street"),
+                            (String) dbObj.get("email"), dbObj.get("dateCreated").toString(), (String) addObj.get("street"),
                             (String) addObj.get("city"), (String) addObj.get("zip"), (String) addObj.get("state"),
                             (String) addObj.get("country"), (String) dbObj.get("profilePic"), null, null);
                 } else {
                     if (comObj != null) {
                         user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
-                                (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), null, null, null, null, null,
+                                (String) dbObj.get("email"), dbObj.get("dateCreated").toString(), null, null, null, null, null,
                                 (String) dbObj.get("profilePic"), (String) comObj.get("name"), (String) comObj.get("website"));
                     } else {
                         user = new User((String) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
-                                (String) dbObj.get("email"), (String) dbObj.get("dateCreated"), null, null, null, null, null,
+                                (String) dbObj.get("email"), dbObj.get("dateCreated").toString(), null, null, null, null, null,
                                 (String) dbObj.get("profilePic"), null, null);
                     }
                 }
@@ -188,7 +188,7 @@ public class UserEngineExtensions {
             }
             obj.put("address", addObj);
         }
-        if(user.getDateCreated() != null && (!user.getDateCreated().isEmpty())){
+        if(user.getDateCreated() != null){
             obj.put("dateCreated", user.getDateCreated());
         }
         if(companyValid(user.getCompany())){

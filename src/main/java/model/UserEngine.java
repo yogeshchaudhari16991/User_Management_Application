@@ -134,7 +134,7 @@ public class UserEngine {
     // generate pre-processing data
     public boolean demoData(){
         for(int i=0; i<5; i++){
-            User user = createNewUser("100"+i, "firstName", "lastName", "email", "dateCreated", "street", "city", "zip", "state",
+            User user = createNewUser("100"+i, "firstName", "lastName", "email", "2016-03-15T07:02:40.896Z", "street", "city", "zip", "state",
                     "country", "profilePic", "companyName", "website");
                 try {
                     this.mongo.update(new BasicDBObject("_id", user.getId()),toDBObject(user), true, false);

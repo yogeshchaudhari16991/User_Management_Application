@@ -69,7 +69,7 @@ public class App {
         DBCollection collection = database.getCollection("Users");
         // delete previous data
         // Uncomment when in Testing mode
-        //collection.remove(new BasicDBObject());
+        collection.remove(new BasicDBObject());
         return collection;
     }
 }

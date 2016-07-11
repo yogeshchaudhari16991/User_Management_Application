@@ -42,6 +42,11 @@ package model;
  */
 
 // static imports
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static util.UserEngineExtensions.addressValid;
 import static util.UserEngineExtensions.companyValid;
 
@@ -77,10 +82,14 @@ public class User {
     private String lastName;
     private String email;
     private Address address;
-    private String dateCreated;
+    private Date dateCreated;
     private Company company;
     private String profilePic;
-
+    // transient fields
+    // date format to be received in JSON object from server
+    private transient DateFormat dateCreatedOn = new SimpleDateFormat("YYYY-MM-dd'T'hh:mm:ss.S'Z'");
+    // date format in which date is stored in MongoDB
+    private transient DateFormat dateCreatedOnDB = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
 
     // Public Constructor
     public User() {
@@ -94,7 +103,17 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.firstName = firstName;
-        this.dateCreated = dateCreated;
+        if(dateCreated != null) {
+            try {
+                this.dateCreated = dateCreatedOn.parse(dateCreated);
+            } catch (ParseException e) {
+                try{
+                    this.dateCreated = dateCreatedOnDB.parse(dateCreated);
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
         if(addressValid(street, city, zip, state, country)) {
             this.address = new Address(street, city, zip, state, country);
         }
@@ -145,12 +164,22 @@ public class User {
         this.address = address;
     }
 
-    public String getDateCreated() {
+    public Date getDateCreated() {
         return dateCreated;
     }
 
     public void setDateCreated(String dateCreated) {
-        this.dateCreated = dateCreated;
+        if(dateCreated != null) {
+            try {
+                this.dateCreated = dateCreatedOn.parse(dateCreated);
+            } catch (ParseException e) {
+                try{
+                    this.dateCreated = dateCreatedOnDB.parse(dateCreated);
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
     }
 
     public String getProfilePic() {
