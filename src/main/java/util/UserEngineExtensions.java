@@ -1,5 +1,52 @@
 package util;
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// UserEngineExtensions.java - Utility file - Defines helper methods for userEngine class   //
+// Ver 1.0                                                                                  //
+// Application: User Management Application                                                 //
+// Language:    Java, ver 8, IntelliJ IDEA 2016.1.3                                         //
+// Platform:    Dell Inspiron 14 5000Series, Core-i5, Windows 10                            //
+// Author:      Yogesh Chaudhari, Intern, Syracuse University                               //
+//              (315) 4809210, yogeshchaudhari16991@gmail.com                               //
+//////////////////////////////////////////////////////////////////////////////////////////////
+/*
+ * File Operations:
+ * -------------------
+ *
+ * Defines Helper methods for UserEngine class
+ * Uses Util.jsonUtil file to provide USerEngine with results for data type conversion
+ * from User object to DBObject
+ * and
+ * from DBObject to User object
+ * Defines a updateField() method to update DBObject fields and convert it to User type Object
+ * Defines a helper method to create new User object
+ * Defines helper method to validate Address and Company Object fields
+ *
+ *
+ */
+/*
+ * Maintenance:
+ * ------------
+ * Required Files:
+ *      model.User.java
+ *      model.Address.java
+ *      model.Company.java
+ *      Java MongoDB driver
+ *
+ * Build Process:
+ *      DevEnv : mvn install
+ *      DepEnv : mvn clean deploy
+ *
+ * Reference: Java MongoDB Driver Documentation : https://docs.mongodb.com/ecosystem/drivers/java/
+ * ----------
+ *
+ * Maintenance History:
+ * --------------------
+ * ver 1.0 : 10 Jul 2016
+ * - first release
+ *
+ */
+
 // imports
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -7,12 +54,11 @@ import model.Address;
 import model.Company;
 import model.User;
 
-/**
- * Created by yoges on 7/8/2016.
- */
 public class UserEngineExtensions {
 
     // Static Utility methods
+
+    //method to convert User object to DBObject
     public static DBObject toDBObject(User user) {
         BasicDBObject obj = new BasicDBObject("_id", user.getId());
         if(user.getFirstName() != null && (!user.getFirstName().isEmpty())){
@@ -66,24 +112,7 @@ public class UserEngineExtensions {
         return obj;
     }
 
-    public static boolean companyValid(Company company) {
-        return companyValid(company.getName(), company.getWebsite());
-    }
-
-    public static boolean companyValid(String name, String website) {
-        return (name != null || website != null) && (!name.isEmpty() || !website.isEmpty());
-    }
-
-    public static boolean addressValid(Address address) {
-        return addressValid(address.getStreet(), address.getCity(), address.getZip(), address.getState(), address.getCountry());
-    }
-
-    public static boolean addressValid(String street, String city, String zip, String state, String country) {
-        return (street != null || city != null || zip != null || state != null || country != null) &&
-                (!street.isEmpty() || !city.isEmpty() || !zip.isEmpty() || !state.isEmpty() || !country.isEmpty());
-    }
-
-
+    // method to convert DBObject to User object
     public static User toUserObject(DBObject dbObj) {
         if(dbObj != null) {
             User user;
@@ -124,6 +153,7 @@ public class UserEngineExtensions {
         return null;
     }
 
+    // method to update DBObject fields
     public static DBObject updateFileds(User user, DBObject obj) {
         if(user.getFirstName() != null && (!user.getFirstName().isEmpty())){
             obj.put("firstName", user.getFirstName());
@@ -182,10 +212,33 @@ public class UserEngineExtensions {
         return obj;
     }
 
+    // static method to create new instance of User type
     public static User createNewUser(String id, String firstName, String lastName, String email, String dateCreated, String street,
                                      String city, String zip, String state, String country, String profilePic, String name,
                                      String website){
         return new User(id, firstName, lastName, email, dateCreated, street, city, zip, state, country,
                 profilePic, name, website);
     }
+
+    //method to validate Company object
+    public static boolean companyValid(Company company) {
+        return companyValid(company.getName(), company.getWebsite());
+    }
+
+    //method to validate Company object's variables
+    public static boolean companyValid(String name, String website) {
+        return (name != null || website != null) && (!name.isEmpty() || !website.isEmpty());
+    }
+
+    //method to validate Address object
+    public static boolean addressValid(Address address) {
+        return addressValid(address.getStreet(), address.getCity(), address.getZip(), address.getState(), address.getCountry());
+    }
+
+    //method to validate Address object's variables
+    public static boolean addressValid(String street, String city, String zip, String state, String country) {
+        return (street != null || city != null || zip != null || state != null || country != null) &&
+                (!street.isEmpty() || !city.isEmpty() || !zip.isEmpty() || !state.isEmpty() || !country.isEmpty());
+    }
+
 }

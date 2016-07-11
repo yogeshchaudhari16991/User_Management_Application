@@ -1,8 +1,49 @@
-/**
- * Created by yoges on 7/10/2016.
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// UserEngineTest.java - JUnit Test file - Defines unit test methods for User Management Application    //
+// Ver 1.0                                                                                              //
+// Application: User Management Application                                                             //
+// Language:    Java, ver 8, IntelliJ IDEA 2016.1.3                                                     //
+// Platform:    Dell Inspiron 14 5000Series, Core-i5, Windows 10                                        //
+// Author:      Yogesh Chaudhari, Intern, Syracuse University                                           //
+//              (315) 4809210, yogeshchaudhari16991@gmail.com                                           //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+ * File Operations:
+ * -------------------
+ *
+ * Defines Test cases for User Management Application
+ *
+ *
+ */
+/*
+ * Maintenance:
+ * ------------
+ * Required Files:
+ *      model.User.java
+ *      JUnit Library
+ *      spark.SPARK
+ *      spark.utils
+ *      Google Gson
+ *      java.io
+ *      java.net
+ *      java.util
+ *
+ * Build Process:
+ *      DevEnv : mvn install
+ *      DepEnv : mvn clean deploy
+ *
+ * Reference: Java MongoDB Driver Documentation : https://docs.mongodb.com/ecosystem/drivers/java/
+ * ----------
+ *
+ * Maintenance History:
+ * --------------------
+ * ver 1.0 : 10 Jul 2016
+ * - first release
+ *
  */
 
-//imports
 import com.google.gson.*;
 import model.User;
 import org.junit.*;
@@ -38,7 +79,7 @@ public class UserEngineTest {
     }
 
     @Test
-    public void aNewUserShouldBeCreated() {
+    public void createNewUser() {
         int initialSize = users.size();
         String jsonReq = "{\"id\":\"1010\",\"firstName\":\"firstName\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"dateCreated\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
         TestResponse res = request("POST", "/users", jsonReq);
@@ -55,9 +96,14 @@ public class UserEngineTest {
     public void getAllUsers() {
         int initialSize = users.size();
         TestResponse res = request("GET", "/users", null);
-        users = res.jsonArr();
-        assertEquals(initialSize, users.size());
-        assertEquals(302, res.status);
+        if(res.status == 302) {
+            users = res.jsonArr();
+            assertEquals(initialSize, users.size());
+            assertEquals(302, res.status);
+        } else {
+            assertEquals("There are no user entries in database", res.body);
+            assertEquals(200, res.status);
+        }
     }
 
     @Test
@@ -77,7 +123,7 @@ public class UserEngineTest {
     }
 
     @Test
-    public void userToUpdate() {
+    public void updateUser() {
         String jsonReq = "{\"id\":\"1000\",\"firstName\":\"firstName-Edited\",\"lastName\":\"lastName\",\"email\":\"email\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"dateCreated\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
         TestResponse res = request("PUT", "/user/1000", jsonReq);
         if (res != null) {

@@ -1,13 +1,61 @@
-/**
- * Created by yoges on 7/8/2016.
+package controller;
+
+//////////////////////////////////////////////////////////////////////////////
+// UserController.java - Controller for REST APIs - Defines Routes in Spark //
+// Ver 1.0                                                                  //
+// Application: User Management Application                                 //
+// Language:    Java, ver 8, IntelliJ IDEA 2016.1.3                         //
+// Platform:    Dell Inspiron 14 5000Series, Core-i5, Windows 10            //
+// Author:      Yogesh Chaudhari, Intern, Syracuse University               //
+//              (315) 4809210, yogeshchaudhari16991@gmail.com               //
+//////////////////////////////////////////////////////////////////////////////
+/*
+ * File Operations:
+ * -------------------
+ *
+ * This file acts as Controller for User type.
+ * Starts SPARK application
+ * Defines Routes for different types of requests from server
+ * Uses UserEngine and Util.* files to perform necessary operations on received requests
+ * and provide respective response.
+ * If request is successful response will be of type application/json
+ * If request is unsuccessful response will be of type type/html with Status code 200 and message stating cause
+ * Note: If required we can convert unsuccessful request's response to application/json type - use toJson(ErrorClass type)
+ *
+ * Note: Uncomment DemoData() line, if no requirement for previously generated data
+ *
+ */
+/*
+ * Maintenance:
+ * ------------
+ * Required Files:
+ *      model.*;
+ *      util.ErrorClass.java
+ *      util.JsonUtil.java
+ *      Google gson
+ *      spark.SPARK
+ *
+ * Build Process:
+ *      DevEnv : mvn install
+ *      DepEnv : mvn clean deploy
+ *
+ * Reference:   Spark Documentation : http://sparkjava.com/documentation.html
+ * ----------   Spark Tutorials : https://sparktutorials.github.io/
+ *              Google Gson User-Guide : https://sites.google.com/site/gson/gson-user-guide
+ *              Building Simple REST API with Java Spark : https://dzone.com/articles/building-simple-restful-api
+ *
+ *
+ * Maintenance History:
+ * --------------------
+ * ver 1.0 : 10 Jul 2016
+ * - first release
+ *
  */
 
-package controller;
 
 //imports
 import com.google.gson.*;
 import model.*;
-import spark.Spark;
 import util.ErrorClass;
 //static imports
 import static spark.Spark.*;

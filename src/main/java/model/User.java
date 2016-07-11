@@ -1,8 +1,45 @@
-/**
- * Created by yoges on 7/8/2016.
- */
 
 package model;
+
+//////////////////////////////////////////////////////////////////////////////
+// User.java - Define User Object type                                      //
+// Ver 1.0                                                                  //
+// Application: User Management Application                                 //
+// Language:    Java, ver 8, IntelliJ IDEA 2016.1.3                         //
+// Platform:    Dell Inspiron 14 5000Series, Core-i5, Windows 10            //
+// Author:      Yogesh Chaudhari, Intern, Syracuse University               //
+//              (315) 4809210, yogeshchaudhari16991@gmail.com               //
+//////////////////////////////////////////////////////////////////////////////
+/*
+ * File Operations:
+ * -------------------
+ *
+ * Implements User type and uses Address Type and Company Type
+ *
+ * Stores User Information
+ *
+ */
+/*
+ * Maintenance:
+ * ------------
+ * Required Files:
+ *      Util.UserEngineExtensions.java
+ *      model.Address.java
+ *      model.Company.java
+ *
+ * Build Process:
+ *      DevEnv : mvn install
+ *      DepEnv : mvn clean deploy
+ *
+ * Reference: None
+ * ----------
+ *
+ * Maintenance History:
+ * --------------------
+ * ver 1.0 : 10 Jul 2016
+ * - first release
+ *
+ */
 
 // static imports
 import static util.UserEngineExtensions.addressValid;
