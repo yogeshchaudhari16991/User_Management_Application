@@ -75,6 +75,10 @@ public class UserEngine {
             return false;
         }
         try {
+            DBCursor cursor = this.mongo.find(new BasicDBObject("_id", user.getId()));
+            if(cursor.size() > 0) {
+                return false;
+            }
             this.mongo.insert(toDBObject(user), WriteConcern.SAFE);
             return true;
         } catch (Exception e) {
