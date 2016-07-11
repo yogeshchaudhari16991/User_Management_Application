@@ -22,6 +22,7 @@
  * Assumptions
  * Language, Libraries and Frameworks Used
  * Instructions to Run Tests - UserEngineTest.java
+ * Instructions to Run Application - App.java
  *
  */
 /*
@@ -86,8 +87,18 @@
  *                                  4. JUnit - ver 4.12
  *
  *
- * Instructions to Run UserEngineTest.java: Before running UserEngineTest.java uncomment folowing lines:
- * ---------------------------------------- 1. collection.remove() line in App.java - mongo() method
- *                                          2. userEngine.demoData() line in UserController.java - constructor method
+ * Instructions to Run UserEngineTest.java:     1. Before running UserEngineTest.java uncomment folowing lines:
+ * ----------------------------------------         collection.remove() line in App.java - mongo() method
+ *                                                  userEngine.demoData() line in UserController.java - constructor method
+ *                                              2. Run MongoDB
+ *                                              3. Run UserEngineTest.java
+ *
+ *
+ * Instructions to Run App.java:    1. Before Running make sure that you comment out following code lines:
+ * -----------------------------            collection.remove() line in App.java - mongo() method
+ *                                          userEngine.demoData() line in UserController.java - constructor method
+ *                                  2. Run MongoDB
+ *                                  3. Run App.java
+ *
  *
  */
