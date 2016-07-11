@@ -101,7 +101,9 @@ public class UserEngineTest {
             users = res.jsonArr();
             assertEquals((++initialSize), users.size());
         } else if (res.status == 200){
-            assertEquals("Conflict Occurred: User with id already present in database", res.body);
+            assertEquals("Conflict Occurred: Either User with id already present in database OR Date format was Wrong." +
+                    "Correct Date Format is \" YYYY-MM-dd'T'hh:mm:ss.S'Z' \" and " +
+                    "example: 2016-03-15T07:02:40.896Z", res.body);
         } else {
             fail("createNewUser Test Failed");
         }
@@ -111,7 +113,9 @@ public class UserEngineTest {
             users = res.jsonArr();
             assertEquals((++initialSize), users.size());
         } else if (res.status == 200){
-            assertEquals("Conflict Occurred: User with id already present in database", res.body);
+            assertEquals("Conflict Occurred: Either User with id already present in database OR Date format was Wrong." +
+                    "Correct Date Format is \" YYYY-MM-dd'T'hh:mm:ss.S'Z' \" and " +
+                    "example: 2016-03-15T07:02:40.896Z", res.body);
         } else {
             fail("createNewUser Test Failed");
         }
@@ -178,7 +182,9 @@ public class UserEngineTest {
                 assertEquals("1000", user.getId());
                 assertEquals("firstName-Edited", user.getFirstName());
             } else if (res.status == 200){
-                assertEquals("User with id 1000 not found", res.body);
+                assertEquals("Error Occurred: Either User with id 1000 is not found in database OR Date format was Wrong." +
+                        "Correct Date Format is \" YYYY-MM-dd'T'hh:mm:ss.S'Z' \" and " +
+                        "example: 2016-03-15T07:02:40.896Z", res.body);
             } else {
                 fail("updateUser Test Failed");
             }
@@ -191,7 +197,9 @@ public class UserEngineTest {
                 assertEquals("1006", user.getId());
                 assertEquals("firstName-Edited", user.getFirstName());
             } else if (res.status == 200){
-                assertEquals("User with id 1006 not found", res.body);
+                assertEquals("Error Occurred: Either User with id 1006 is not found in database OR Date format was Wrong." +
+                    "Correct Date Format is \" YYYY-MM-dd'T'hh:mm:ss.S'Z' \" and " +
+                    "example: 2016-03-15T07:02:40.896Z", res.body);
             } else {
                 fail("updateUser Test Failed");
             }

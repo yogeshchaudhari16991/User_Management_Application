@@ -71,20 +71,23 @@ public class UserEngine {
     //insert User to DB
     public boolean insertUser(String json){
         User user = (User) fromJson(json);
-        if(user.getId() == null || user.getId().isEmpty()){
-            return false;
-        }
-        try {
-            DBCursor cursor = this.mongo.find(new BasicDBObject("_id", user.getId()));
-            if(cursor.size() > 0) {
+        if(user != null) {
+            if (user.getId() == null || user.getId().isEmpty()) {
                 return false;
             }
-            this.mongo.insert(toDBObject(user), WriteConcern.SAFE);
-            return true;
-        } catch (Exception e) {
-            System.out.println("Exception occurred while inserting Object: " + e );
-            return false;
+            try {
+                DBCursor cursor = this.mongo.find(new BasicDBObject("_id", user.getId()));
+                if (cursor.size() > 0) {
+                    return false;
+                }
+                this.mongo.insert(toDBObject(user), WriteConcern.SAFE);
+                return true;
+            } catch (Exception e) {
+                System.out.println("Exception occurred while inserting Object: " + e);
+                return false;
+            }
         }
+        return false;
     }
 
     //retrieve all users from DB

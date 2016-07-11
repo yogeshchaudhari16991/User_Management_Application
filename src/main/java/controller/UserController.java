@@ -107,7 +107,9 @@ public class UserController {
             } else {
                 res.type("text/html");
                 res.status(200);
-                return ((new ErrorClass("Conflict Occurred: User with id already present in database")).getMessage());
+                return ((new ErrorClass("Conflict Occurred: Either User with id already present in database OR Date format was Wrong." +
+                        "Correct Date Format is \" YYYY-MM-dd'T'hh:mm:ss.S'Z' \" and " +
+                        "example: 2016-03-15T07:02:40.896Z")).getMessage());
             }
         });
 
@@ -135,7 +137,9 @@ public class UserController {
             }
             res.type("text/html");
             res.status(200);
-            return ((new ErrorClass("User with id " + id + " not found")).getMessage());
+            return ((new ErrorClass("Error Occurred: Either User with id " + id + " is not found in database OR Date format was Wrong." +
+                    "Correct Date Format is \" YYYY-MM-dd'T'hh:mm:ss.S'Z' \" and " +
+                    "example: 2016-03-15T07:02:40.896Z")).getMessage());
         });
 
         get("/:anything", (req, res) -> {
