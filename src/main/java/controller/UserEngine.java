@@ -103,11 +103,15 @@ public class UserEngine implements UserEngineInterface {
     public List<User> getAllUsers(){
         DBCursor cursor = this.mongo.find();
         // create new List of Users
-        List<User> users = new ArrayList<User>();
-        for(DBObject dbObj : cursor){
-            users.add(toUserObject(dbObj));
+        if(cursor.size() > 0) {
+            List<User> users = new ArrayList<User>(cursor.size());
+            for (DBObject dbObj : cursor) {
+                users.add(toUserObject(dbObj));
+            }
+            return users;
+        } else {
+            return null;
         }
-        return users;
     }
 
     //get user with specific ID from DB
