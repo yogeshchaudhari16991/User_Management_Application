@@ -52,6 +52,8 @@ package controller;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 import com.mongodb.*;
 import interfaces.UserEngineInterface;
 import model.User;
@@ -66,8 +68,11 @@ public class UserEngine implements UserEngineInterface {
     private final DBCollection mongo;
 
     // Public Constructor
-    public UserEngine(DBCollection mongo) {
+    public UserEngine(DBCollection mongo, boolean isTest) {
         this.mongo = mongo;
+        if(isTest){
+            demoData();
+        }
     }
 
     // CRUD methods for User
@@ -76,7 +81,7 @@ public class UserEngine implements UserEngineInterface {
     public boolean insertUser(String json){
         User user = (User) fromJson(json);
         if(user != null) {
-            if (user.getId() == 0L) {
+            if (user.getId() == null) {
                 return false;
             }
             try {
@@ -116,38 +121,48 @@ public class UserEngine implements UserEngineInterface {
 
     //get user with specific ID from DB
     public User getUser(String id){
-        DBCursor cursor = this.mongo.find(new BasicDBObject("_id", Long.parseLong(id)));
-        if(cursor.size() == 0) {
+        try {
+            DBCursor cursor = this.mongo.find(new BasicDBObject("_id", UUID.fromString(id)));
+            if(cursor.size() == 0) {
+                return null;
+            }
+            User user = toUserObject(cursor.next());
+            if(user != null) {
+                return user;
+            }
+            return null;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
             return null;
         }
-        User user = toUserObject(cursor.next());
-        if(user != null) {
-            return user;
-        }
-        return null;
     }
 
     //update user information if user is already present in DB
     public boolean updateUser(String id, String jsonBody){
-        Long idL = Long.parseLong(id);
-        if(idL != 0L) {
-            DBCursor cursor = this.mongo.find(new BasicDBObject("_id", idL));
-            if (cursor.size() == 0) {
-                return false;
-            }
+        if(id != null){
             try {
-                DBObject curr = cursor.next();
-                User user = (User) fromJson(jsonBody);
-                EmailValidator emailValidator = new EmailValidator();
-                if (emailValidator.validate(user.getEmail())) {
-                    BasicDBObject newObj = (BasicDBObject) updateFileds(user, curr);
-                    // flags for upsert=false, multi=false
-                    this.mongo.update(new BasicDBObject("_id", idL), newObj, false, false);
-                    return true;
-                } else {
+                UUID idUUID = UUID.fromString(id);
+                DBCursor cursor = this.mongo.find(new BasicDBObject("_id", idUUID));
+                if (cursor.size() == 0) {
                     return false;
                 }
-            } catch (Exception e) {
+                try {
+                    DBObject curr = cursor.next();
+                    User user = (User) fromJson(jsonBody);
+                    EmailValidator emailValidator = new EmailValidator();
+                    if (emailValidator.validate(user.getEmail())) {
+                        BasicDBObject newObj = (BasicDBObject) updateFileds(user, curr);
+                        // flags for upsert=false, multi=false
+                        this.mongo.update(new BasicDBObject("_id", idUUID), newObj, false, false);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
                 return false;
             }
         }
@@ -159,7 +174,7 @@ public class UserEngine implements UserEngineInterface {
     // generate pre-processing data
     public boolean demoData(){
         for(long i=0L; i<5; i++){
-            User user = createNewUser(100+i, "firstName", "lastName", "Darby_Leffler68@gmail.com", "2016-03-15T07:02:40.896Z", "street", "city", "zip", "state",
+            User user = createNewUser(UUID.randomUUID(), "firstName", "lastName", "Darby_Leffler68@gmail.com", "2016-03-15T07:02:40.896Z", "street", "city", "zip", "state",
                     "country", "profilePic", "companyName", "website");
                 try {
                     this.mongo.update(new BasicDBObject("_id", user.getId()),toDBObject(user), true, false);

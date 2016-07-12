@@ -49,6 +49,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import static util.UserEngineExtensions.addressValid;
 import static util.UserEngineExtensions.companyValid;
@@ -79,7 +80,7 @@ public class User {
 
     // encapsulated fields
     private static final long serialVersionUID = 42L;
-    private Long id;
+    private UUID id;
     private String firstName;
     private String lastName;
     private String email;
@@ -98,7 +99,7 @@ public class User {
         super();
     }
 
-    public User(Long id, String firstName, String lastName, String email, String dateCreated, String street, String city, String zip,
+    public User(UUID id, String firstName, String lastName, String email, String dateCreated, String street, String city, String zip,
                 String state, String country, String profilePic, String name, String website) {
         this();
         this.id = id;
@@ -131,11 +132,11 @@ public class User {
     }
 
     // getters and setters
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

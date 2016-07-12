@@ -51,11 +51,11 @@ import controller.UserEngine;
 public class App {
     // private Mongo DB client for app
     private static MongoClient mongoClient;
-
+    private static final boolean DEVELOPMENT = false;
     // entry method for app - Main method
     public static void main(String[] args) {
         try {
-            new UserController(new UserEngine(mongo()));
+            new UserController(new UserEngine(mongo(), DEVELOPMENT));
         } catch (Exception e) {
             e.printStackTrace();
             mongoClient.close();

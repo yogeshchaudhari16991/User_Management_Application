@@ -22,8 +22,6 @@ package controller;
  * If request is unsuccessful response will be of type type/html with Status code 200 and message stating cause
  * Note: If required we can convert unsuccessful request's response to application/json type - use toJson(ErrorClass type)
  *
- * Note: Uncomment DemoData() line, if no requirement for previously generated data
- *
  */
 /*
  * Maintenance:
@@ -59,6 +57,8 @@ import interfaces.UserEngineInterface;
 import model.*;
 import util.ErrorClass;
 //static imports
+import java.util.List;
+
 import static spark.Spark.*;
 import static util.JsonUtil.toJson;
 
@@ -75,9 +75,6 @@ public class UserController {
 
     public UserController(UserEngineInterface userEngine) {
         this.userEngine = userEngine;
-        // add some demo data
-        // uncomment when in Testing mode
-         this.userEngine.demoData();
         // setup routing points
         setupRequestPoints();
     }
@@ -85,14 +82,15 @@ public class UserController {
     private void setupRequestPoints() {
         get("/users", (req, res) -> {
             JsonArray jArr = new JsonArray();
-            for (User user : this.userEngine.getAllUsers()) {
-                jArr.add(new JsonParser().parse(toJson(user)));
-            }
-            if (jArr.size() > 0) {
+            List<User> users = this.userEngine.getAllUsers();
+            if(users != null) {
+                for (User user : users) {
+                    jArr.add(new JsonParser().parse(toJson(user)));
+                }
                 res.type("application/json");
                 res.status(302);  // HTTP code for Found
                 return jArr;
-            } else {
+            }else {
                 res.type("text/html");
                 res.status(200);  // HTTP code for OK
                 return ((new ErrorClass("There are no user entries in database")).getMessage());

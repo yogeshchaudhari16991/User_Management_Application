@@ -49,42 +49,51 @@
  */
 
 import com.google.gson.*;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
+import controller.UserController;
+import controller.UserEngine;
 import model.User;
 import org.junit.*;
 import spark.Spark;
 import spark.utils.IOUtils;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 // static imports
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static util.JsonUtil.toJson;
 
 // Test Class
 public class UserEngineTest {
 
     private List<User> users = new ArrayList<User>();
-    private User user;
+    private static final boolean TEST = true;
 
     @BeforeClass
     public static void beforeClass() {
-        App.main(null);
+        MongoClient mongoClient = null;
+        try {
+            mongoClient = new MongoClient();
+            DB database = mongoClient.getDB("UserManagementSystem");
+            DBCollection collection = database.getCollection("UsersTest");
+            new UserController(new UserEngine(collection, TEST));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            fail("Unknown Host");
+        }
+
     }
 
     @Before
     public void before(){
-        // Before running UserEngineTest.java uncomment
-        // collection.remove() line in App.java - mongo() method
-        // userEngine.demoData() line in UserController.java - constructor method
-        //
         // due to DemoData() method in UserEngine.java there will be 5 users with id ranging from 1000 to 1004
         // already in mongoDB collection
         //
-        // if database already contains some demo data uncomment these lines
         TestResponse res = request("GET", "/users", null);
         users = res.jsonArr();
     }
@@ -95,7 +104,9 @@ public class UserEngineTest {
     // case 2: User already exists in Collection
     public void createNewUser() {
         int initialSize = users.size();
-        String jsonReq = "{\"id\":\"1010\",\"firstName\":\"firstName\",\"lastName\":\"lastName\",\"email\":\"Darby_Leffler68@gmail.com\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"2016-03-15T07:02:40.896Z\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
+        User user = users.get(0);
+        user.setId(UUID.randomUUID());
+        String jsonReq = toJson(user);
         TestResponse res = request("POST", "/users", jsonReq);
         if(res.status == 302) {
             users = res.jsonArr();
@@ -107,7 +118,7 @@ public class UserEngineTest {
         } else {
             fail("createNewUser Test Failed");
         }
-        jsonReq = "{\"id\":\"1010\",\"firstName\":\"firstName\",\"lastName\":\"lastName\",\"email\":\"Darby_Leffler68@gmail.com\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"2016-03-15T07:02:40.896Z\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
+        // try same request to create new user with same ID
         res = request("POST", "/users", jsonReq);
         if(res.status == 302) {
             users = res.jsonArr();
@@ -143,26 +154,27 @@ public class UserEngineTest {
     // Case 1: User exists in collection
     // Case 2: User does not exist in collection
     public void getUser() {
-        String id = "1000";
+        User user = users.get(0);
+        UUID id = user.getId();
         TestResponse res = request("GET", "/user/"+id, null);
         if (res != null) {
             if(res.status == 302) {
                 user = res.json();
                 assertEquals(id, user.getId());
             } else if (res.status == 200){
-                assertEquals("User with id 1000 not found", res.body);
+                assertEquals("User with id " + id + " not found", res.body);
             } else {
                 fail("getUsers Test Failed");
             }
         }
-        id = "1006";
+        id = UUID.randomUUID();
         res = request("GET", "/user/"+id, null);
         if (res != null) {
             if(res.status == 302) {
                 user = res.json();
                 assertEquals(id, user.getId());
             } else if (res.status == 200){
-                assertEquals("User with id 1006 not found", res.body);
+                assertEquals("User with id " + id + " not found", res.body);
             } else {
                 fail("getUsers Test Failed");
             }
@@ -174,30 +186,36 @@ public class UserEngineTest {
     // Case 1: User exists in collection
     // Case 2: User does not exist in collection
     public void updateUser() {
-        String jsonReq = "{\"id\":\"1000\",\"firstName\":\"firstName-Edited\",\"lastName\":\"lastName\",\"email\":\"Darby_Leffler68@gmail.com\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"2016-03-15T07:02:40.896Z\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
-        TestResponse res = request("PUT", "/user/1000", jsonReq);
+        User user = users.get(0);
+        UUID id = user.getId();
+        user.setFirstName("firstName-Edited");
+        String jsonReq = toJson(user);
+        TestResponse res = request("PUT", "/user/" + id, jsonReq);
         if (res != null) {
             if(res.status == 302) {
                 user = res.json();
-                assertEquals("1000", user.getId());
+                assertEquals(id, user.getId());
                 assertEquals("firstName-Edited", user.getFirstName());
             } else if (res.status == 200){
-                assertEquals("Error Occurred: Either User with id 1000 is not found in database OR Email was invalid OR Date format was Wrong." +
+                assertEquals("Error Occurred: Either User with id" + id + " is not found in database OR Email was invalid OR Date format was Wrong." +
                         "Correct Date Format is \" YYYY-MM-dd'T'hh:mm:ss.S'Z' \" and " +
                         "example: 2016-03-15T07:02:40.896Z", res.body);
             } else {
                 fail("updateUser Test Failed");
             }
         }
-        jsonReq = "{\"id\":\"1006\",\"firstName\":\"firstName-Edited\",\"lastName\":\"lastName\",\"email\":\"Darby_Leffler68@gmail.com\",\"address\":{\"city\":\"city\",\"street\":\"street\",\"zip\":\"zip\",\"state\":\"state\",\"country\":\"country\"},\"dateCreated\":\"2016-03-15T07:02:40.896Z\",\"company\":{\"name\":\"name\",\"website\":\"website\"},\"profilePic\":\"profilePic\"}";
-        res = request("PUT", "/user/1006", jsonReq);
+        user = users.get(0);
+        user.setId(UUID.randomUUID());
+        id = user.getId();
+        jsonReq = toJson(user);
+        res = request("PUT", "/user/"+ id, jsonReq);
         if (res != null) {
             if(res.status == 302) {
                 user = res.json();
-                assertEquals("1006", user.getId());
+                assertEquals(id, user.getId());
                 assertEquals("firstName-Edited", user.getFirstName());
             } else if (res.status == 200){
-                assertEquals("Error Occurred: Either User with id 1006 is not found in database OR Email was invalid OR Date format was Wrong." +
+                assertEquals("Error Occurred: Either User with id " + id + " is not found in database OR Email was invalid OR Date format was Wrong." +
                     "Correct Date Format is \" YYYY-MM-dd'T'hh:mm:ss.S'Z' \" and " +
                     "example: 2016-03-15T07:02:40.896Z", res.body);
             } else {

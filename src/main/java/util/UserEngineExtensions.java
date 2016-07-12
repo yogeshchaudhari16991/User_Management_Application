@@ -54,6 +54,8 @@ import model.Address;
 import model.Company;
 import model.User;
 
+import java.util.UUID;
+
 public class UserEngineExtensions {
 
     // Static Utility methods
@@ -125,24 +127,24 @@ public class UserEngineExtensions {
                 comObj = (BasicDBObject) dbObj.get("company");
             }
             if(addObj != null && comObj != null) {
-                 user = new User((Long) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
+                 user = new User((UUID) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
                         (String) dbObj.get("email"), dbObj.get("dateCreated").toString(), (String) addObj.get("street"),
                         (String) addObj.get("city"), (String) addObj.get("zip"), (String) addObj.get("state"),
                         (String) addObj.get("country"), (String) dbObj.get("profilePic"), (String) comObj.get("name"),
                         (String) comObj.get("website"));
             } else {
                 if (addObj != null) {
-                    user = new User((Long) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
+                    user = new User((UUID) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
                             (String) dbObj.get("email"), dbObj.get("dateCreated").toString(), (String) addObj.get("street"),
                             (String) addObj.get("city"), (String) addObj.get("zip"), (String) addObj.get("state"),
                             (String) addObj.get("country"), (String) dbObj.get("profilePic"), null, null);
                 } else {
                     if (comObj != null) {
-                        user = new User((Long) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
+                        user = new User((UUID) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
                                 (String) dbObj.get("email"), dbObj.get("dateCreated").toString(), null, null, null, null, null,
                                 (String) dbObj.get("profilePic"), (String) comObj.get("name"), (String) comObj.get("website"));
                     } else {
-                        user = new User((Long) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
+                        user = new User((UUID) dbObj.get("_id"), (String) dbObj.get("firstName"), (String) dbObj.get("lastName"),
                                 (String) dbObj.get("email"), dbObj.get("dateCreated").toString(), null, null, null, null, null,
                                 (String) dbObj.get("profilePic"), null, null);
                     }
@@ -213,7 +215,7 @@ public class UserEngineExtensions {
     }
 
     // static method to create new instance of User type
-    public static User createNewUser(Long id, String firstName, String lastName, String email, String dateCreated, String street,
+    public static User createNewUser(UUID id, String firstName, String lastName, String email, String dateCreated, String street,
                                      String city, String zip, String state, String country, String profilePic, String name,
                                      String website){
         return new User(id, firstName, lastName, email, dateCreated, street, city, zip, state, country,

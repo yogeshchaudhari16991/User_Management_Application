@@ -19,8 +19,6 @@ package interfaces;
  * Primary Use -    To be used by UserController for serving REST API calls
  *                  Return back results of CRUD methods on database back to controller (UserController)
  *
- * Note: DemoData() function, generates pre-processing data
- *
  */
 /*
  * Maintenance:
@@ -53,5 +51,4 @@ public interface UserEngineInterface {
     List<User> getAllUsers();
     User getUser(String id);
     boolean updateUser(String id, String json);
-    boolean demoData();
 }
