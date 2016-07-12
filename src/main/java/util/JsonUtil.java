@@ -43,19 +43,21 @@ package util;
 
 // imports
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import model.User;
 
 public class JsonUtil {
 
+    private static Gson g = new GsonBuilder().setPrettyPrinting().create();
+
     // Static Utility methods
     public static String toJson(Object object) {
-        return new Gson().toJson(object);
+        return (g.toJson(object));
     }
 
     public static Object fromJson(String json) {
         try {
-            Gson g = new Gson();
             User user = g.fromJson(json, User.class);
             return user;
         } catch (JsonSyntaxException e){

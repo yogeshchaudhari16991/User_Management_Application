@@ -1,4 +1,4 @@
-package model;
+package controller;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -14,9 +14,9 @@ package model;
  * File Operations:
  * -------------------
  *
- * This File implements CRUD methods to modify and retrieve data from mongoDB
- * Uses Util files and Java Mongo driver to perform operations on MongoDB and JSON format data
- * Returns results back to UserController
+ * This File implements UserEngineInterface
+ * Uses Util files and Java Mongo driver to perform CRUD operations on MongoDB and JSON format data
+ *
  *
  * Note: DemoData() function, generates pre-processing data
  *
@@ -49,15 +49,18 @@ package model;
  */
 
 // imports
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import com.mongodb.*;
+import interfaces.UserEngineInterface;
+import model.User;
 import util.EmailValidator;
 // static imports
 import static util.JsonUtil.fromJson;
 import static util.UserEngineExtensions.*;
 
-public class UserEngine {
+public class UserEngine implements UserEngineInterface {
 
     // encapsulated fields
     private final DBCollection mongo;
@@ -73,7 +76,7 @@ public class UserEngine {
     public boolean insertUser(String json){
         User user = (User) fromJson(json);
         if(user != null) {
-            if (user.getId() == null || user.getId().isEmpty()) {
+            if (user.getId() == 0L) {
                 return false;
             }
             try {
@@ -109,7 +112,7 @@ public class UserEngine {
 
     //get user with specific ID from DB
     public User getUser(String id){
-        DBCursor cursor = this.mongo.find(new BasicDBObject("_id", id));
+        DBCursor cursor = this.mongo.find(new BasicDBObject("_id", Long.parseLong(id)));
         if(cursor.size() == 0) {
             return null;
         }
@@ -122,33 +125,37 @@ public class UserEngine {
 
     //update user information if user is already present in DB
     public boolean updateUser(String id, String jsonBody){
-        DBCursor cursor = this.mongo.find(new BasicDBObject("_id", id));
-        if(cursor.size() == 0){
-            return false;
-        }
-        try {
-            DBObject curr = cursor.next();
-            User user = (User)fromJson(jsonBody);
-            EmailValidator emailValidator = new EmailValidator();
-            if(emailValidator.validate(user.getEmail())) {
-                BasicDBObject newObj = (BasicDBObject) updateFileds(user, curr);
-                // flags for upsert=false, multi=false
-                this.mongo.update(new BasicDBObject("_id", id), newObj, false, false);
-                return true;
-            } else {
+        Long idL = Long.parseLong(id);
+        if(idL != 0L) {
+            DBCursor cursor = this.mongo.find(new BasicDBObject("_id", idL));
+            if (cursor.size() == 0) {
                 return false;
             }
-        } catch (Exception e) {
-            return false;
+            try {
+                DBObject curr = cursor.next();
+                User user = (User) fromJson(jsonBody);
+                EmailValidator emailValidator = new EmailValidator();
+                if (emailValidator.validate(user.getEmail())) {
+                    BasicDBObject newObj = (BasicDBObject) updateFileds(user, curr);
+                    // flags for upsert=false, multi=false
+                    this.mongo.update(new BasicDBObject("_id", idL), newObj, false, false);
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (Exception e) {
+                return false;
+            }
         }
+        return false;
     }
 
 
     // Only for Testing phase
     // generate pre-processing data
     public boolean demoData(){
-        for(int i=0; i<5; i++){
-            User user = createNewUser("100"+i, "firstName", "lastName", "Darby_Leffler68@gmail.com", "2016-03-15T07:02:40.896Z", "street", "city", "zip", "state",
+        for(long i=0L; i<5; i++){
+            User user = createNewUser(100+i, "firstName", "lastName", "Darby_Leffler68@gmail.com", "2016-03-15T07:02:40.896Z", "street", "city", "zip", "state",
                     "country", "profilePic", "companyName", "website");
                 try {
                     this.mongo.update(new BasicDBObject("_id", user.getId()),toDBObject(user), true, false);

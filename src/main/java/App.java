@@ -25,7 +25,7 @@
  * ------------
  * Required Files:
  *      Java MongoDB driver
- *      model.UserEngine.java
+ *      controller.UserEngine.java
  *      controller.UserController.java
  *
  * Build Process:
@@ -46,7 +46,7 @@
 
 import com.mongodb.*;
 import controller.UserController;
-import model.UserEngine;
+import controller.UserEngine;
 
 public class App {
     // private Mongo DB client for app

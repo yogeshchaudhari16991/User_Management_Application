@@ -16,7 +16,7 @@ package controller;
  * This file acts as Controller for User type.
  * Starts SPARK application
  * Defines Routes for different types of requests from server
- * Uses UserEngine and Util.* files to perform necessary operations on received requests
+ * Uses UserEngineInterface and Util.* files to perform necessary operations on received requests
  * and provide respective response.
  * If request is successful response will be of type application/json
  * If request is unsuccessful response will be of type type/html with Status code 200 and message stating cause
@@ -55,6 +55,7 @@ package controller;
 
 //imports
 import com.google.gson.*;
+import interfaces.UserEngineInterface;
 import model.*;
 import util.ErrorClass;
 //static imports
@@ -70,9 +71,9 @@ public class UserController {
         // Spark.threadPool("int val - max number of threads");
     }
 
-    private UserEngine userEngine;
+    private UserEngineInterface userEngine;
 
-    public UserController(UserEngine userEngine) {
+    public UserController(UserEngineInterface userEngine) {
         this.userEngine = userEngine;
         // add some demo data
         // uncomment when in Testing mode

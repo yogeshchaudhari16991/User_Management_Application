@@ -79,7 +79,7 @@ public class User {
 
     // encapsulated fields
     private static final long serialVersionUID = 42L;
-    private String id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -98,7 +98,7 @@ public class User {
         super();
     }
 
-    public User(String id, String firstName, String lastName, String email, String dateCreated, String street, String city, String zip,
+    public User(Long id, String firstName, String lastName, String email, String dateCreated, String street, String city, String zip,
                 String state, String country, String profilePic, String name, String website) {
         this();
         this.id = id;
@@ -131,11 +131,11 @@ public class User {
     }
 
     // getters and setters
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
