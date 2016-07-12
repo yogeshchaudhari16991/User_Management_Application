@@ -49,7 +49,6 @@ package controller;
  */
 
 // imports
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -81,24 +80,20 @@ public class UserEngine implements UserEngineInterface {
     public boolean insertUser(String json){
         User user = (User) fromJson(json);
         if(user != null) {
-            if (user.getId() == null) {
-                return false;
-            }
-            try {
-                DBCursor cursor = this.mongo.find(new BasicDBObject("_id", user.getId()));
-                if (cursor.size() > 0) {
+            if (user.getId() != null) {
+                try {
+                    DBCursor cursor = this.mongo.find(new BasicDBObject("_id", user.getId()));
+                    if (cursor.size() == 0) {
+                        EmailValidator emailValidator = new EmailValidator();
+                        if (emailValidator.validate(user.getEmail())) {
+                            this.mongo.insert(toDBObject(user), WriteConcern.SAFE);
+                            return true;
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Exception occurred while inserting Object: " + e);
                     return false;
                 }
-                EmailValidator emailValidator = new EmailValidator();
-                if(emailValidator.validate(user.getEmail())) {
-                    this.mongo.insert(toDBObject(user), WriteConcern.SAFE);
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (Exception e) {
-                System.out.println("Exception occurred while inserting Object: " + e);
-                return false;
             }
         }
         return false;
@@ -114,21 +109,19 @@ public class UserEngine implements UserEngineInterface {
                 users.add(toUserObject(dbObj));
             }
             return users;
-        } else {
-            return null;
         }
+        return null;
     }
 
     //get user with specific ID from DB
     public User getUser(String id){
         try {
             DBCursor cursor = this.mongo.find(new BasicDBObject("_id", UUID.fromString(id)));
-            if(cursor.size() == 0) {
-                return null;
-            }
-            User user = toUserObject(cursor.next());
-            if(user != null) {
-                return user;
+            if(cursor.size() > 0) {
+                User user = toUserObject(cursor.next());
+                if (user != null) {
+                    return user;
+                }
             }
             return null;
         } catch (IllegalArgumentException e) {
@@ -143,10 +136,7 @@ public class UserEngine implements UserEngineInterface {
             try {
                 UUID idUUID = UUID.fromString(id);
                 DBCursor cursor = this.mongo.find(new BasicDBObject("_id", idUUID));
-                if (cursor.size() == 0) {
-                    return false;
-                }
-                try {
+                if (cursor.size() > 0) {
                     DBObject curr = cursor.next();
                     User user = (User) fromJson(jsonBody);
                     EmailValidator emailValidator = new EmailValidator();
@@ -155,13 +145,9 @@ public class UserEngine implements UserEngineInterface {
                         // flags for upsert=false, multi=false
                         this.mongo.update(new BasicDBObject("_id", idUUID), newObj, false, false);
                         return true;
-                    } else {
-                        return false;
                     }
-                } catch (Exception e) {
-                    return false;
                 }
-            } catch (IllegalArgumentException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }

@@ -236,61 +236,54 @@ public class UserEngineTest {
         URL url;
         HttpURLConnection connection;
         String body;
-        switch (method.toLowerCase()) {
-            case "post":
-            case "put": {
-                try {
-                    url = new URL("http://localhost:4567" + path);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod(method);
-                    connection.setDoOutput(true);
-                    connection.setRequestProperty("Content-Type", "application/json");
-                    connection.setRequestProperty("Content-Length", Integer.toString(jsonReq.length()));
-                    BufferedWriter httpRequestBodyWriter =
-                            new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
-                    httpRequestBodyWriter.write(jsonReq);
-                    httpRequestBodyWriter.close();
-                    connection.connect();
-                    body = IOUtils.toString(connection.getInputStream());
-                    return new TestResponse(connection.getResponseCode(), body);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    fail("Sending request failed: " + e.getMessage());
-                    return null;
-                } catch (ProtocolException e) {
-                    e.printStackTrace();
-                    fail("Sending request failed: " + e.getMessage());
-                    return null;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    fail("Sending request failed: " + e.getMessage());
-                    return null;
+        try {
+            url = new URL("http://localhost:4567" + path);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(method);
+            switch (method.toLowerCase()) {
+                case "post":
+                case "put": {
+                    try {
+                        connection.setDoOutput(true);
+                        connection.setRequestProperty("Content-Type", "application/json");
+                        connection.setRequestProperty("Content-Length", Integer.toString(jsonReq.length()));
+                        BufferedWriter httpRequestBodyWriter =
+                                new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
+                        httpRequestBodyWriter.write(jsonReq);
+                        httpRequestBodyWriter.close();
+                        connection.connect();
+                        body = IOUtils.toString(connection.getInputStream());
+                        return new TestResponse(connection.getResponseCode(), body);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        fail("Sending request failed: " + e.getMessage());
+                        return null;
+                    } finally {
+                        connection.disconnect();
+                    }
                 }
-            }
-            case "get": {
-                try {
-                    url = new URL("http://localhost:4567" + path);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod(method);
-                    connection.connect();
-                    body = IOUtils.toString(connection.getInputStream());
-                    return new TestResponse(connection.getResponseCode(), body);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    fail("Sending request failed: " + e.getMessage());
-                    return null;
-                } catch (ProtocolException e) {
-                    e.printStackTrace();
-                    fail("Sending request failed: " + e.getMessage());
-                    return null;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    fail("Sending request failed: " + e.getMessage());
-                    return null;
+                case "get": {
+                    try {
+                        connection.connect();
+                        body = IOUtils.toString(connection.getInputStream());
+                        return new TestResponse(connection.getResponseCode(), body);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        fail("Sending request failed: " + e.getMessage());
+                        return null;
+                    } finally {
+                        connection.disconnect();
+                    }
                 }
+                default:
+                    return null;
             }
-            default:
-                return null;
+        } catch (MalformedURLException | ProtocolException  e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
