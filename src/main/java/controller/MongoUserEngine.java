@@ -92,9 +92,11 @@ public class MongoUserEngine implements UserEngineInterface {
                         EmailValidator emailValidator = new EmailValidator();
                         if (emailValidator.validate(user.getEmail())) {
                             this.mongo.insert(toDBObject(user), WriteConcern.SAFE);
+                            cursor.close();
                             return true;
                         }
                     }
+                    cursor.close();
                 } catch (Exception e) {
                     System.out.println("Exception occurred while inserting Object: " + e);
                     return false;
@@ -114,8 +116,10 @@ public class MongoUserEngine implements UserEngineInterface {
             for (DBObject dbObj : cursor) {
                 users.add(toUserObject(dbObj));
             }
+            cursor.close();
             return users;
         }
+        cursor.close();
         return null;
     }
 
@@ -127,9 +131,11 @@ public class MongoUserEngine implements UserEngineInterface {
             if(cursor.size() > 0) {
                 User user = toUserObject(cursor.next());
                 if (user != null) {
+                    cursor.close();
                     return user;
                 }
             }
+            cursor.close();
             return null;
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -152,9 +158,11 @@ public class MongoUserEngine implements UserEngineInterface {
                         BasicDBObject newObj = (BasicDBObject) updateFileds(user, curr);
                         // flags for upsert=false, multi=false
                         this.mongo.update(new BasicDBObject("_id", idUUID), newObj, false, false);
+                        cursor.close();
                         return true;
                     }
                 }
+                cursor.close();
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
