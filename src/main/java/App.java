@@ -15,8 +15,8 @@
  *
  * This file implements main() method - entry point for Application
  * Using DBCollection method starts MongoDB client and gets Collection data - DB
- * In main method passes retrieved collection object to new UserEngine object
- * Passes UserEngine object to new UserController object
+ * In main method passes retrieved collection object to new MongoUserEngine object
+ * Passes MongoUserEngine object to new UserController object
  * By creating UserController object starts Spark application
  *
  */
@@ -25,51 +25,56 @@
  * ------------
  * Required Files:
  *      Java MongoDB driver
- *      controller.UserEngine.java
- *      controller.UserController.java
+ *      controller.factories.*
+ *      controller.interface.*
  *
  * Build Process:
  *      DevEnv : mvn install
  *      DepEnv : mvn clean deploy
  *
- * Reference:   Java MongoDB Driver Documentation : https://docs.mongodb.com/ecosystem/drivers/java/
- * ----------   Building Simple REST API with Java Spark : https://dzone.com/articles/building-simple-restful-api
+ * Reference:   None
+ * ----------
  *
  *
  * Maintenance History:
  * --------------------
  * ver 1.0 : 10 Jul 2016
  * - first release
+ * ver 1.0.1 : 11 Jul 2016
+ * - Interfaces and Factories added
  *
  */
 
 
-import com.mongodb.*;
-import controller.UserController;
-import controller.UserEngine;
+//imports
+import com.mongodb.DBCollection;
+import controller.factories.ControllerFactory;
+import controller.factories.DBFactory;
+import controller.factories.EngineFactory;
+import controller.interfaces.ControllerInterface;
+import controller.interfaces.DBInterface;
+import controller.interfaces.UserEngineInterface;
 
+
+//main Application class
 public class App {
-    // private Mongo DB client for app
-    private static MongoClient mongoClient;
-    private static final boolean DEVELOPMENT = false;
+    private static final boolean DEPLOYED = false;
     // entry method for app - Main method
     public static void main(String[] args) {
         try {
-            new UserController(new UserEngine(mongo(), DEVELOPMENT));
-        } catch (Exception e) {
+            DBFactory dbFactory = new DBFactory();
+            DBInterface mongo = dbFactory.getDBType("MongoDB");
+            DBCollection collection = (DBCollection) mongo.getDB("UserManagementSystems", "Users");
+            EngineFactory engineFactory = new EngineFactory();
+            UserEngineInterface userEngine = engineFactory.getUserEngine("MongoUserEngine");
+            userEngine.assignCollection(collection, DEPLOYED);
+            ControllerFactory controllerFactory = new ControllerFactory();
+            ControllerInterface controller = controllerFactory.getController("UserController");
+            controller.assignEngine(userEngine);
+            controller.setupRequestPoints();
+        } catch (NullPointerException e) {
             e.printStackTrace();
-            mongoClient.close();
         }
     }
 
-    // get Mongo DB Collection object
-    private static DBCollection mongo() throws Exception {
-        mongoClient = new MongoClient();
-        DB database = mongoClient.getDB("UserManagementSystem");
-        DBCollection collection = database.getCollection("Users");
-        // delete previous data
-        // Uncomment when in Testing mode
-        collection.remove(new BasicDBObject());
-        return collection;
-    }
 }

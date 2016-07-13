@@ -12,7 +12,7 @@ package controller;
 /*
  * File Operations:
  * -------------------
- *
+ * This file implements Controller interface
  * This file acts as Controller for User type.
  * Starts SPARK application
  * Defines Routes for different types of requests from server
@@ -47,22 +47,27 @@ package controller;
  * --------------------
  * ver 1.0 : 10 Jul 2016
  * - first release
+ * ver 1.0.1 : 11 Jul 2016
+ * - Interfaces and Factories added
  *
  */
 
 
 //imports
 import com.google.gson.*;
-import interfaces.UserEngineInterface;
+import controller.interfaces.ControllerInterface;
+import controller.interfaces.UserEngineInterface;
 import model.*;
 import util.ErrorClass;
 //static imports
 import java.util.List;
-
 import static spark.Spark.*;
 import static util.JsonUtil.toJson;
 
-public class UserController {
+public class UserController implements ControllerInterface {
+
+
+    private UserEngineInterface userEngine;
 
     static {
         // to change default port
@@ -71,15 +76,14 @@ public class UserController {
         // Spark.threadPool("int val - max number of threads");
     }
 
-    private UserEngineInterface userEngine;
+    public UserController() { }
 
-    public UserController(UserEngineInterface userEngine) {
+    public  void assignEngine(UserEngineInterface userEngine) {
         this.userEngine = userEngine;
-        // setup routing points
-        setupRequestPoints();
     }
 
-    private void setupRequestPoints() {
+    // setup routing points
+    public void setupRequestPoints() {
         get("/users", (req, res) -> {
             JsonArray jArr = new JsonArray();
             List<User> users = this.userEngine.getAllUsers();
@@ -171,4 +175,6 @@ public class UserController {
             return "";
         });
     }
+
+
 }

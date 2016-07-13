@@ -1,7 +1,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-// UserEngineTest.java - JUnit Test file - Defines unit test methods for User Management Application    //
+// MongoUserEngineTest.java - JUnit Test file - Defines unit test methods for User Management Application    //
 // Ver 1.0                                                                                              //
 // Application: User Management Application                                                             //
 // Language:    Java, ver 8, IntelliJ IDEA 2016.1.3                                                     //
@@ -16,7 +16,7 @@
  * Defines Test cases for User Management Application
  * Defines TestResponse class for converting user-data received from Response to required User object type
  *
- * Important Note:  Before running UserEngineTest.java uncomment folowing lines:
+ * Important Note:  Before running MongoUserEngineTest.java uncomment folowing lines:
  * ---------------  collection.remove() line in App.java - mongo() method
  *                  userEngine.demoData() line in UserController.java - constructor method
  *
@@ -49,11 +49,13 @@
  */
 
 import com.google.gson.*;
-import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
-import controller.UserController;
-import controller.UserEngine;
+import controller.factories.ControllerFactory;
+import controller.factories.DBFactory;
+import controller.factories.EngineFactory;
+import controller.interfaces.ControllerInterface;
+import controller.interfaces.DBInterface;
+import controller.interfaces.UserEngineInterface;
 import model.User;
 import org.junit.*;
 import spark.Spark;
@@ -69,31 +71,33 @@ import static org.junit.Assert.fail;
 import static util.JsonUtil.toJson;
 
 // Test Class
-public class UserEngineTest {
+public class MongoUserEngineTest {
 
     private List<User> users = new ArrayList<User>();
     private static final boolean TEST = true;
 
     @BeforeClass
     public static void beforeClass() {
-        MongoClient mongoClient = null;
         try {
-            mongoClient = new MongoClient();
-            DB database = mongoClient.getDB("UserManagementSystem");
-            DBCollection collection = database.getCollection("UsersTest");
-            new UserController(new UserEngine(collection, TEST));
-        } catch (UnknownHostException e) {
+            DBFactory dbFactory = new DBFactory();
+            DBInterface mongo = dbFactory.getDBType("MongoDB");
+            DBCollection collection = (DBCollection) mongo.getDB("UserManagementSystems", "Users_Test");
+            EngineFactory engineFactory = new EngineFactory();
+            UserEngineInterface userEngine = engineFactory.getUserEngine("MongoUserEngine");
+            userEngine.assignCollection(collection, TEST);
+            ControllerFactory controllerFactory = new ControllerFactory();
+            ControllerInterface controller = controllerFactory.getController("UserController");
+            controller.assignEngine(userEngine);
+            controller.setupRequestPoints();
+        } catch (NullPointerException e) {
             e.printStackTrace();
-            fail("Unknown Host");
         }
-
     }
 
     @Before
     public void before(){
-        // due to DemoData() method in UserEngine.java there will be 5 users with id ranging from 1000 to 1004
+        // due to DemoData() method in MongoUserEngine.java there will be 5 users with id ranging from 1000 to 1004
         // already in mongoDB collection
-        //
         TestResponse res = request("GET", "/users", null);
         users = res.jsonArr();
     }
@@ -258,8 +262,6 @@ public class UserEngineTest {
                         e.printStackTrace();
                         fail("Sending request failed: " + e.getMessage());
                         return null;
-                    } finally {
-                        connection.disconnect();
                     }
                 }
                 case "get": {
@@ -271,8 +273,6 @@ public class UserEngineTest {
                         e.printStackTrace();
                         fail("Sending request failed: " + e.getMessage());
                         return null;
-                    } finally {
-                        connection.disconnect();
                     }
                 }
                 default:

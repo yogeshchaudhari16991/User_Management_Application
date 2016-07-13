@@ -2,7 +2,7 @@ package controller;
 
 
 //////////////////////////////////////////////////////////////////////////////
-// UserEngine.java - UserEngine for MongoDB                   //
+// MongoUserEngine.java - MongoUserEngine for MongoDB                   //
 // Ver 1.0                                                                  //
 // Application: User Management Application                                 //
 // Language:    Java, ver 8, IntelliJ IDEA 2016.1.3                         //
@@ -45,6 +45,8 @@ package controller;
  * --------------------
  * ver 1.0 : 10 Jul 2016
  * - first release
+ * ver 1.0.1 : 11 Jul 2016
+ * - Interfaces and Factories added
  *
  */
 
@@ -52,31 +54,34 @@ package controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import com.mongodb.*;
-import interfaces.UserEngineInterface;
+import controller.interfaces.UserEngineInterface;
 import model.User;
 import util.EmailValidator;
 // static imports
 import static util.JsonUtil.fromJson;
 import static util.UserEngineExtensions.*;
 
-public class UserEngine implements UserEngineInterface {
+public class MongoUserEngine implements UserEngineInterface {
 
     // encapsulated fields
-    private final DBCollection mongo;
+    private DBCollection mongo;
 
     // Public Constructor
-    public UserEngine(DBCollection mongo, boolean isTest) {
-        this.mongo = mongo;
+    public MongoUserEngine() { }
+
+    // CRUD methods for User
+
+    @Override
+    public void assignCollection(Object collection, boolean isTest) {
+        this.mongo = (DBCollection) collection;
         if(isTest){
             demoData();
         }
     }
 
-    // CRUD methods for User
-
     //insert User to DB
+    @Override
     public boolean insertUser(String json){
         User user = (User) fromJson(json);
         if(user != null) {
@@ -100,6 +105,7 @@ public class UserEngine implements UserEngineInterface {
     }
 
     //retrieve all users from DB
+    @Override
     public List<User> getAllUsers(){
         DBCursor cursor = this.mongo.find();
         // create new List of Users
@@ -114,6 +120,7 @@ public class UserEngine implements UserEngineInterface {
     }
 
     //get user with specific ID from DB
+    @Override
     public User getUser(String id){
         try {
             DBCursor cursor = this.mongo.find(new BasicDBObject("_id", UUID.fromString(id)));
@@ -131,6 +138,7 @@ public class UserEngine implements UserEngineInterface {
     }
 
     //update user information if user is already present in DB
+    @Override
     public boolean updateUser(String id, String jsonBody){
         if(id != null){
             try {
@@ -165,7 +173,7 @@ public class UserEngine implements UserEngineInterface {
                 try {
                     this.mongo.update(new BasicDBObject("_id", user.getId()),toDBObject(user), true, false);
                 } catch (Exception e) {
-                    System.out.println("In UserEngine: " + e);
+                    System.out.println("In MongoUserEngine: " + e);
                     e.printStackTrace();
                     return false;
                 }

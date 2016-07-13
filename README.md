@@ -46,7 +46,12 @@
  * ver 1.0 : 10 Jul 2016
  * - first release
  * ver 1.0.1 : 11 Jul 2016
- * - Interface for CRUD methods on database added - userEngineInterface
+ * - Interfaces and Factories added
+ *
+ * Next Release:
+ * -------------
+ *      Add few more test-cases
+ *
  *
  * Problem Statement:
  * ------------------

@@ -13,8 +13,8 @@ package util;
  * File Operations:
  * -------------------
  *
- * Defines Helper methods for UserEngine class
- * Uses Util.jsonUtil file to provide UserEngine with results for data type conversion
+ * Defines Helper methods for MongoUserEngine class
+ * Uses Util.jsonUtil file to provide MongoUserEngine with results for data type conversion
  * from User object to DBObject
  * and
  * from DBObject to User object

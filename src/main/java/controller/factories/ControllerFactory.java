@@ -1,7 +1,7 @@
-package interfaces;
+package controller.factories;
 
 //////////////////////////////////////////////////////////////////////////////
-// UserEngineInterface.java - Defines UserEngineInterface for MongoDB       //
+// ControllerFactory.java - defines methods to get Controller object        //
 // Ver 1.0                                                                  //
 // Application: User Management Application                                 //
 // Language:    Java, ver 8, IntelliJ IDEA 2016.1.3                         //
@@ -13,19 +13,16 @@ package interfaces;
  * File Operations:
  * -------------------
  *
- * This File defines interface with CRUD methods to modify and retrieve data from database (MongoDB)
- *
- *
- * Primary Use -    To be used by UserController for serving REST API calls
- *                  Return back results of CRUD methods on database back to controller (UserController)
+ * Defines Factory class for Controller objects
  *
  */
 /*
  * Maintenance:
  * ------------
  * Required Files:
- *      model.User.java;
- *      java.util
+ *
+ *      controller.interface.ControllerInterface
+ *      controller.UserController
  *
  *
  * Build Process:
@@ -38,17 +35,26 @@ package interfaces;
  *
  * Maintenance History:
  * --------------------
- * ver 1.0 : 11 Jul 2016
+ * ver 1.0 : 10 Jul 2016
  * - first release
+ * ver 1.0.1 : 11 Jul 2016
+ * - Interfaces and Factories added
  *
  */
 
-import model.User;
-import java.util.List;
+// imports
+import controller.UserController;
+import controller.interfaces.ControllerInterface;
 
-public interface UserEngineInterface {
-    boolean insertUser(String json);
-    List<User> getAllUsers();
-    User getUser(String id);
-    boolean updateUser(String id, String json);
+// factory class to get new Controller objects
+public class ControllerFactory {
+    // method to get different types of new Controller objects
+    public ControllerInterface getController(String type) {
+        if(type != null || !type.isEmpty()) {
+            if (type.equalsIgnoreCase("UserController")) {
+                return new UserController();
+            }
+        }
+        return null;
+    }
 }
